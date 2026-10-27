@@ -89,7 +89,7 @@
             <div class="hidden md:flex flex-1 max-w-sm mx-6">
                 <div class="w-full luxe-input flex items-center px-4 py-2 cursor-text">
                     <input type="text" id="searchInput" placeholder="Tìm kiếm địa danh, mã BĐS..." class="flex-1 bg-transparent border-none outline-none text-sm font-medium text-luxe-black placeholder-gray-500">
-                    <div class="w-8 h-8 rounded-full bg-luxe-accent flex items-center justify-center flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-luxe-black flex items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                 </div>
@@ -195,13 +195,13 @@
     <div class="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
         <button class="bg-luxe-black text-white px-6 py-3 rounded-full font-semibold shadow-lg flex items-center gap-2 border border-gray-700">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-            Liên hệ
+            Liên hệ Zalo
         </button>
     </div>
 
     <!-- Data & Logic -->
     <script>
-        // API Endpoint (Đảm bảo URL này là public và đã Deploy as Web App mới nhất)
+        // API Endpoint
         const API_URL = "https://script.google.com/macros/s/AKfycbwXG6fwAEg_soSkEsze-BOrpUD9RH5MSZAUTFzT_XxjVCupi5qWM1e7LswyZcsg8N3F/exec";
         
         let RAW_DATA = [];
@@ -229,18 +229,18 @@
         });
 
         function fetchData() {
-            // Show loading state implicitly (already in HTML)
+            // Hiển thị khung xương (skeleton) đã có sẵn trong HTML ban đầu
             fetch(API_URL)
                 .then(response => {
-                    if (!response.ok) throw new Error("Network response was not ok");
+                    if (!response.ok) throw new Error("Lỗi mạng từ phía máy chủ");
                     return response.json();
                 })
                 .then(data => {
-                    // Lọc dữ liệu chuẩn: Chỉ lấy hàng có 'Mã BĐS' hợp lệ
+                    // Lọc lấy dữ liệu hợp lệ có 'Mã BĐS'
                     RAW_DATA = data.filter(item => item['Mã BĐS'] && String(item['Mã BĐS']).trim() !== '');
                     
                     if (RAW_DATA.length === 0) {
-                        showEmptyState("Hệ thống trống", "Không tìm thấy dữ liệu bất động sản hợp lệ từ máy chủ.");
+                        showEmptyState("Kho lưu trữ trống", "Chưa có bất động sản nào được cập nhật trên hệ thống.");
                         return;
                     }
                     
@@ -249,18 +249,7 @@
                 })
                 .catch(error => {
                     console.error("Fetch Error:", error);
-                    // Dữ liệu dự phòng nếu API lỗi (Cho mục đích demo UX)
-                    RAW_DATA = [{"Mã BĐS":"PQ00001","Tên Sản Phẩm":"PQ00001_Nhà phố mặt tiền_Dương Đông_Đường Dương Đông - Cửa Cạn_ONT","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt tiền","Khu vực 12":"Dương Đông","Địa chỉ":"Đường Dương Đông - Cửa Cạn","Diện tích (m²)":720,"Giá niêm yết (VND)":19685000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00002","Tên Sản Phẩm":"PQ00002_Nhà phố mặt hẻm_Hòn Thơm_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt hẻm","Khu vực 12":"Hòn Thơm","Địa chỉ":"Đường 30\/4","Diện tích (m²)":90,"Giá niêm yết (VND)":10870000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00002","Tên Sản Phẩm":"PQ00002_Nhà phố mặt hẻm_Hòn Thơm_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt hẻm","Khu vực 12":"Hòn Thơm","Địa chỉ":"Đường 30\/4","Diện tích (m²)":90,"Giá niêm yết (VND)":11877000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00002","Tên Sản Phẩm":"PQ00002_Nhà phố mặt hẻm_Hòn Thơm_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt hẻm","Khu vực 12":"Hòn Thơm","Địa chỉ":"Đường 30\/4","Diện tích (m²)":90,"Giá niêm yết (VND)":11877000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00002","Tên Sản Phẩm":"PQ00002_Nhà phố mặt hẻm_Hòn Thơm_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt hẻm","Khu vực 12":"Hòn Thơm","Địa chỉ":"Đường 30\/4","Diện tích (m²)":90,"Giá niêm yết (VND)":11877000000,"Tình trạng":"Đã cọc"},{"Mã BĐS":"PQ00003","Tên Sản Phẩm":"PQ00003_Nhà phố mặt tiền_Bãi Vòng_Tỉnh lộ 975_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt tiền","Khu vực 12":"Bãi Vòng","Địa chỉ":"Tỉnh lộ 975","Diện tích (m²)":220,"Giá niêm yết (VND)":20063000000,"Tình trạng":"Đã bán"},{"Mã BĐS":"PQ00004","Tên Sản Phẩm":"PQ00004_Boutique resort_Suối Tiên_Tỉnh lộ 975_Thổ cư","Loại BĐS ng ta đang đầu tư":"Boutique resort","Khu vực 12":"Suối Tiên","Địa chỉ":"Tỉnh lộ 975","Diện tích (m²)":400,"Giá niêm yết (VND)":39932000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00004","Tên Sản Phẩm":"PQ00004_Boutique resort_Suối Tiên_Tỉnh lộ 975_Thổ cư","Loại BĐS ng ta đang đầu tư":"Boutique resort","Khu vực 12":"Suối Tiên","Địa chỉ":"Tỉnh lộ 975","Diện tích (m²)":400,"Giá niêm yết (VND)":39932000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00005","Tên Sản Phẩm":"PQ00005_Mini hotel_Bãi Sao_Đường ĐT46_Thổ cư","Loại BĐS ng ta đang đầu tư":"Mini hotel","Khu vực 12":"Bãi Sao","Địa chỉ":"Đường ĐT46","Diện tích (m²)":126,"Giá niêm yết (VND)":19660000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00005","Tên Sản Phẩm":"PQ00005_Mini hotel_Bãi Sao_Đường ĐT46_Thổ cư","Loại BĐS ng ta đang đầu tư":"Mini hotel","Khu vực 12":"Bãi Sao","Địa chỉ":"Đường ĐT46","Diện tích (m²)":126,"Giá niêm yết (VND)":19660000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00005","Tên Sản Phẩm":"PQ00005_Mini hotel_Bãi Sao_Đường ĐT46_Thổ cư","Loại BĐS ng ta đang đầu tư":"Mini hotel","Khu vực 12":"Bãi Sao","Địa chỉ":"Đường ĐT46","Diện tích (m²)":126,"Giá niêm yết (VND)":19488000000,"Tình trạng":"Giữ chỗ"},{"Mã BĐS":"PQ00006","Tên Sản Phẩm":"PQ00006_Boutique resort_Bãi Trường_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Boutique resort","Khu vực 12":"Bãi Trường","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":525,"Giá niêm yết (VND)":81632000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00006","Tên Sản Phẩm":"PQ00006_Boutique resort_Bãi Trường_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Boutique resort","Khu vực 12":"Bãi Trường","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":525,"Giá niêm yết (VND)":81632000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00007","Tên Sản Phẩm":"PQ00007_Shophouse_Hàm Ninh_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Shophouse","Khu vực 12":"Hàm Ninh","Địa chỉ":"Đường 30\/4","Diện tích (m²)":140,"Giá niêm yết (VND)":17580000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00007","Tên Sản Phẩm":"PQ00007_Shophouse_Hàm Ninh_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Shophouse","Khu vực 12":"Hàm Ninh","Địa chỉ":"Đường 30\/4","Diện tích (m²)":140,"Giá niêm yết (VND)":17580000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00007","Tên Sản Phẩm":"PQ00007_Shophouse_Hàm Ninh_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Shophouse","Khu vực 12":"Hàm Ninh","Địa chỉ":"Đường 30\/4","Diện tích (m²)":140,"Giá niêm yết (VND)":18162000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00008","Tên Sản Phẩm":"PQ00008_Căn hộ biển_Bãi Khem_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Căn hộ biển","Khu vực 12":"Bãi Khem","Địa chỉ":"Đường 30\/4","Diện tích (m²)":60,"Giá niêm yết (VND)":4370000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00008","Tên Sản Phẩm":"PQ00008_Căn hộ biển_Bãi Khem_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Căn hộ biển","Khu vực 12":"Bãi Khem","Địa chỉ":"Đường 30\/4","Diện tích (m²)":60,"Giá niêm yết (VND)":4370000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00008","Tên Sản Phẩm":"PQ00008_Căn hộ biển_Bãi Khem_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Căn hộ biển","Khu vực 12":"Bãi Khem","Địa chỉ":"Đường 30\/4","Diện tích (m²)":60,"Giá niêm yết (VND)":4631000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00009","Tên Sản Phẩm":"PQ00009_Khách sạn mini_Bãi Vòng_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Khách sạn mini","Khu vực 12":"Bãi Vòng","Địa chỉ":"Đường 30\/4","Diện tích (m²)":160,"Giá niêm yết (VND)":13080000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00010","Tên Sản Phẩm":"PQ00010_Đất mặt tiền biển_Rạch Vẹm_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Đất mặt tiền biển","Khu vực 12":"Rạch Vẹm","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":440,"Giá niêm yết (VND)":33410000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00010","Tên Sản Phẩm":"PQ00010_Đất mặt tiền biển_Rạch Vẹm_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Đất mặt tiền biển","Khu vực 12":"Rạch Vẹm","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":440,"Giá niêm yết (VND)":30895000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00010","Tên Sản Phẩm":"PQ00010_Đất mặt tiền biển_Rạch Vẹm_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Đất mặt tiền biển","Khu vực 12":"Rạch Vẹm","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":440,"Giá niêm yết (VND)":30895000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00010","Tên Sản Phẩm":"PQ00010_Đất mặt tiền biển_Rạch Vẹm_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Đất mặt tiền biển","Khu vực 12":"Rạch Vẹm","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":440,"Giá niêm yết (VND)":30895000000,"Tình trạng":"Giữ chỗ"}];
-                    
-                    // Nếu vẫn không có data fallback
-                    if (RAW_DATA.length === 0) {
-                        showEmptyState("Lỗi kết nối", "Không thể truy cập dữ liệu từ Google Sheets. Vui lòng kiểm tra lại đường link API.");
-                    } else {
-                        // Dùng data fallback
-                        console.warn("Đang sử dụng dữ liệu tĩnh dự phòng.");
-                        initFilters();
-                        applyFilters();
-                    }
+                    showEmptyState("Lỗi kết nối", "Không thể lấy dữ liệu từ hệ thống. Vui lòng kiểm tra lại quyền truy cập.");
                 });
         }
 
@@ -295,37 +284,47 @@
             const fragment = document.createDocumentFragment();
             
             data.forEach(item => {
-                // Determine image tone based on type to simulate varied high-end photos
-                let imgHue = 0;
-                let type = item['Loại BĐS ng ta đang đầu tư'] || '';
-                if (type.includes('Biệt thự')) { imgHue = 120; }
-                if (type.includes('Đất')) { imgHue = 45; }
-                if (type.includes('Khách sạn') || type.includes('Resort')) { imgHue = 200; }
-
                 const card = document.createElement('div');
                 card.className = 'luxe-card cursor-pointer group flex flex-col gap-3';
                 
-                // Badge Logic
+                // Trạng thái Badge
                 let badgeHTML = '';
                 if (item['Tình trạng'] === 'Sẵn bán') {
-                    badgeHTML = `<div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[11px] font-bold text-luxe-black shadow-sm z-10">Guest Favorite</div>`;
-                } else {
-                    badgeHTML = `<div class="absolute top-3 left-3 bg-luxe-black/80 backdrop-blur px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm z-10">${item['Tình trạng']}</div>`;
+                    badgeHTML = `<div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[11px] font-bold text-luxe-black shadow-sm z-20">Guest Favorite</div>`;
+                } else if (item['Tình trạng']) {
+                    badgeHTML = `<div class="absolute top-3 left-3 bg-luxe-black/80 backdrop-blur px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm z-20">${item['Tình trạng']}</div>`;
                 }
+
+                // Xử lý Hình Ảnh Thông Minh
+                let coverImg = item['Ảnh Bìa'] ? String(item['Ảnh Bìa']).trim() : '';
+                
+                // Nếu là ID Google Drive thuần (không chứa http và độ dài > 10 ký tự)
+                if (coverImg && !coverImg.startsWith('http') && coverImg.length > 10) {
+                    coverImg = `https://drive.google.com/uc?export=view&id=${coverImg}`;
+                } 
+                // Fallback nếu không có ảnh
+                else if (!coverImg) {
+                    coverImg = 'https://placehold.co/500x475/ebebeb/717171?text=PhuQuoc+Luxe';
+                }
+
+                let type = item['Loại BĐS ng ta đang đầu tư'] || 'Bất động sản';
 
                 card.innerHTML = `
                     <div class="card-img-wrap relative aspect-[20/19] bg-gray-100">
                         ${badgeHTML}
-                        <!-- Favorite Heart Icon Top Right -->
-                        <button class="absolute top-3 right-3 z-10 p-1 group-hover:scale-110 transition-transform">
-                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: rgba(0, 0, 0, 0.5); height: 24px; width: 24px; stroke: white; stroke-width: 2; overflow: visible;"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z"></path></svg>
+                        <!-- Nút Lưu trữ (Tim) -->
+                        <button class="absolute top-3 right-3 z-20 p-1 group-hover:scale-110 transition-transform">
+                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: rgba(0, 0, 0, 0.4); height: 24px; width: 24px; stroke: white; stroke-width: 2; overflow: visible;"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z"></path></svg>
                         </button>
                         
-                        <!-- Simulated Image -->
-                        <div class="card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 mix-blend-multiply" style="filter: hue-rotate(${imgHue}deg) saturate(0.5);"></div>
+                        <!-- ẢNH THẬT -->
+                        <img src="${coverImg}" loading="lazy" alt="${item['Tên Sản Phẩm'] || 'Bất động sản Phú Quốc'}" class="card-img absolute inset-0 w-full h-full object-cover">
                         
-                        <!-- Dots indicating a carousel (UI only) -->
-                        <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                        <!-- Lớp phủ bóng mờ dưới đáy ảnh (Bảo vệ tính dễ đọc của UI nếu có gắn chữ lên trên) -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent z-10 pointer-events-none"></div>
+                        
+                        <!-- Carousel Dots (Giả lập UI) -->
+                        <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                             <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
                             <div class="w-1.5 h-1.5 rounded-full bg-white/50"></div>
                             <div class="w-1.5 h-1.5 rounded-full bg-white/50"></div>
@@ -336,12 +335,12 @@
                     
                     <div class="flex flex-col">
                         <div class="flex justify-between items-start">
-                            <h3 class="font-semibold text-[15px] text-luxe-black truncate pr-4">${item['Khu vực 12'] || 'Phú Quốc'}</h3>
+                            <h3 class="font-semibold text-[15px] text-luxe-black truncate pr-4">${item['Khu vực 12'] || 'Đảo Ngọc'}, Phú Quốc</h3>
                             <div class="flex items-center gap-1 flex-shrink-0">
                                 <span class="text-[13px] text-luxe-black font-semibold">${item['Mã BĐS']}</span>
                             </div>
                         </div>
-                        <p class="text-[15px] text-luxe-gray mt-0.5 truncate">${item['Địa chỉ'] || ''}</p>
+                        <p class="text-[15px] text-luxe-gray mt-0.5 truncate">${item['Địa chỉ'] || 'Thông tin vị trí'}</p>
                         <p class="text-[15px] text-luxe-gray mt-0.5">${type} • ${formatArea(item['Diện tích (m²)'])}</p>
                         
                         <div class="mt-1.5">
@@ -366,8 +365,8 @@
                 btn.className = `filter-pill flex flex-col items-center justify-center gap-2 min-w-[72px] px-2 py-3 rounded-xl border-b-2 border-transparent transition-all ${isFirst ? 'text-luxe-black border-luxe-black active' : 'text-gray-500 opacity-80'}`;
                 btn.dataset.value = val;
                 
-                // SVG Icons based on type string matching
-                let svgPath = 'M3 13h18M5 13v8a2 2 0 002 2h10a2 2 0 002-2v-8M9 21v-8M15 21v-8M5 13l7-8.5L19 13'; // Default house
+                // SVG Icons dựa trên loại hình
+                let svgPath = 'M3 13h18M5 13v8a2 2 0 002 2h10a2 2 0 002-2v-8M9 21v-8M15 21v-8M5 13l7-8.5L19 13'; // Nhà mặc định
                 if (val.includes('Biệt thự') || val.includes('Resort')) svgPath = 'M3 21h18M5 21v-14a2 2 0 012-2h10a2 2 0 012 2v14M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4';
                 if (val.includes('Đất')) svgPath = 'M2 20h20M5 20L10 10l5 5 4-8 5 13';
                 if (val === 'all') svgPath = 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z';
