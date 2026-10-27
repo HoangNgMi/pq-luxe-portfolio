@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PhuQuoc Luxe Portfolio</title>
+    
+    <!-- Typography: Inter for a clean, structural feel similar to Circular -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        luxe: {
+                            black: '#222222',
+                            gray: '#717171',
+                            light: '#ebebeb',
+                            accent: '#FF385C',
+                        }
+                    },
+                    aspectRatio: {
+                        'luxe-card': '20 / 19',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { color: #222222; -webkit-font-smoothing: antialiased; background-color: #ffffff; }
+        
+        /* Hide scrollbar for horizontal scrolling elements */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Luxe Card Image Hover */
+        .card-img-wrap { overflow: hidden; border-radius: 12px; }
+        .card-img { transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .luxe-card:hover .card-img { transform: scale(1.05); }
+        
+        /* Filter Pill Styling */
+        .filter-pill {
+            transition: all 0.2s ease;
+        }
+        .filter-pill:hover {
+            color: #222222;
+            border-color: #DDDDDD;
+        }
+        .filter-pill.active {
+            color: #222222;
+            border-color: #222222;
+        }
+        
+        /* Minimalist Input */
+        .luxe-input {
+            border: 1px solid #DDDDDD;
+            border-radius: 999px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+            transition: box-shadow 0.2s ease;
+        }
+        .luxe-input:focus-within {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen flex flex-col">
+
+    <!-- Header (Sticky) -->
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div class="px-6 md:px-10 lg:px-20 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 2L2 12V30H30V12L16 2Z" stroke="#222222" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M11 30V18H21V30" stroke="#222222" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-bold tracking-tight text-xl text-luxe-black hidden sm:block">PhuQuoc<span class="font-light">Luxe</span></span>
+            </div>
+            
+            <!-- Central Search Bar (Desktop) -->
+            <div class="hidden md:flex flex-1 max-w-sm mx-6">
+                <div class="w-full luxe-input flex items-center px-4 py-2 cursor-text">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm địa danh, mã BĐS..." class="flex-1 bg-transparent border-none outline-none text-sm font-medium text-luxe-black placeholder-gray-500">
+                    <div class="w-8 h-8 rounded-full bg-luxe-accent flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Menu -->
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-semibold hidden lg:block hover:bg-gray-50 px-4 py-2 rounded-full cursor-pointer transition-colors">Khu vực riêng tư</span>
+                <div class="flex items-center gap-2 border border-gray-300 rounded-full px-2 py-1 cursor-pointer hover:shadow-md transition-shadow">
+                    <svg class="w-5 h-5 ml-2 text-luxe-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    <div class="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center text-white text-xs">PQ</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Search -->
+        <div class="md:hidden px-6 pb-4 pt-2">
+            <div class="w-full luxe-input flex items-center px-4 py-2 cursor-text">
+                <svg class="w-5 h-5 text-luxe-black mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-luxe-black">Bất kỳ đâu</span>
+                    <span class="text-[11px] text-gray-500">Mọi mức giá • Bất kỳ loại hình</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Carousel -->
+    <div class="sticky top-20 md:top-20 z-40 bg-white shadow-sm border-b border-gray-100">
+        <div class="px-6 md:px-10 lg:px-20 py-4">
+            <div class="flex items-center gap-4 overflow-x-auto no-scrollbar pb-1" id="filter-type">
+                <!-- Filter items generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-6 md:px-10 lg:px-20 py-8 flex flex-col">
+        
+        <!-- Top Toolbar -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h2 class="text-2xl font-semibold tracking-tight text-luxe-black">Bộ sưu tập <span id="kpi-total" class="text-gray-500 text-xl font-normal ml-1">(Đang tải...)</span></h2>
+            
+            <div class="flex items-center gap-2">
+                <select id="sortSelect" class="border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium hover:border-gray-900 transition-colors focus:outline-none cursor-pointer bg-white appearance-none">
+                    <option value="price-desc">Giá giảm dần</option>
+                    <option value="price-asc">Giá tăng dần</option>
+                    <option value="area-desc">Diện tích lớn nhất</option>
+                </select>
+                <button onclick="resetFilters()" class="border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium hover:border-gray-900 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Xóa lọc
+                </button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+            <!-- Loading Skeletons -->
+            <div class="animate-pulse flex flex-col gap-3">
+                <div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div>
+                <div>
+                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/4 mt-3"></div>
+                </div>
+            </div>
+            <div class="hidden sm:flex animate-pulse flex-col gap-3">
+                <div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div>
+                <div>
+                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/4 mt-3"></div>
+                </div>
+            </div>
+            <div class="hidden lg:flex animate-pulse flex-col gap-3">
+                <div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div>
+                <div>
+                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/4 mt-3"></div>
+                </div>
+            </div>
+            <div class="hidden xl:flex animate-pulse flex-col gap-3">
+                <div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div>
+                <div>
+                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/4 mt-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty / Error State -->
+        <div id="emptyState" class="hidden py-32 flex-col items-center justify-center text-center">
+            <h3 class="text-2xl font-semibold text-luxe-black mb-2" id="emptyTitle">Không có kết quả chính xác</h3>
+            <p class="text-base text-gray-500 mb-6" id="emptyDesc">Thử thay đổi hoặc xóa một số bộ lọc của bạn.</p>
+            <button onclick="fetchData()" class="px-6 py-3 bg-luxe-black text-white font-semibold rounded-lg hover:bg-gray-900 transition-colors">Tải lại dữ liệu</button>
+        </div>
+    </main>
+
+    <!-- Fixed Bottom Contact (Mobile) -->
+    <div class="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+        <button class="bg-luxe-black text-white px-6 py-3 rounded-full font-semibold shadow-lg flex items-center gap-2 border border-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            Liên hệ
+        </button>
+    </div>
+
+    <!-- Data & Logic -->
+    <script>
+        // API Endpoint (Đảm bảo URL này là public và đã Deploy as Web App mới nhất)
+        const API_URL = "https://script.google.com/macros/s/AKfycbwXG6fwAEg_soSkEsze-BOrpUD9RH5MSZAUTFzT_XxjVCupi5qWM1e7LswyZcsg8N3F/exec";
+        
+        let RAW_DATA = [];
+        let filteredData = [];
+
+        // Utilities
+        const formatMoney = (val) => {
+            if (!val || isNaN(val)) return 'Liên hệ';
+            const ty = val / 1000000000;
+            return ty % 1 === 0 ? ty + ' tỷ' : ty.toFixed(1).replace('.', ',') + ' tỷ';
+        };
+        
+        const formatArea = (val) => val ? val + ' m²' : '';
+        
+        const debounce = (func, wait) => {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func(...args), wait);
+            };
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+        });
+
+        function fetchData() {
+            // Show loading state implicitly (already in HTML)
+            fetch(API_URL)
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
+                .then(data => {
+                    // Lọc dữ liệu chuẩn: Chỉ lấy hàng có 'Mã BĐS' hợp lệ
+                    RAW_DATA = data.filter(item => item['Mã BĐS'] && String(item['Mã BĐS']).trim() !== '');
+                    
+                    if (RAW_DATA.length === 0) {
+                        showEmptyState("Hệ thống trống", "Không tìm thấy dữ liệu bất động sản hợp lệ từ máy chủ.");
+                        return;
+                    }
+                    
+                    initFilters();
+                    applyFilters();
+                })
+                .catch(error => {
+                    console.error("Fetch Error:", error);
+                    // Dữ liệu dự phòng nếu API lỗi (Cho mục đích demo UX)
+                    RAW_DATA = [{"Mã BĐS":"PQ00001","Tên Sản Phẩm":"PQ00001_Nhà phố mặt tiền_Dương Đông_Đường Dương Đông - Cửa Cạn_ONT","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt tiền","Khu vực 12":"Dương Đông","Địa chỉ":"Đường Dương Đông - Cửa Cạn","Diện tích (m²)":720,"Giá niêm yết (VND)":19685000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00002","Tên Sản Phẩm":"PQ00002_Nhà phố mặt hẻm_Hòn Thơm_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt hẻm","Khu vực 12":"Hòn Thơm","Địa chỉ":"Đường 30\/4","Diện tích (m²)":90,"Giá niêm yết (VND)":10870000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00002","Tên Sản Phẩm":"PQ00002_Nhà phố mặt hẻm_Hòn Thơm_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt hẻm","Khu vực 12":"Hòn Thơm","Địa chỉ":"Đường 30\/4","Diện tích (m²)":90,"Giá niêm yết (VND)":11877000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00002","Tên Sản Phẩm":"PQ00002_Nhà phố mặt hẻm_Hòn Thơm_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt hẻm","Khu vực 12":"Hòn Thơm","Địa chỉ":"Đường 30\/4","Diện tích (m²)":90,"Giá niêm yết (VND)":11877000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00002","Tên Sản Phẩm":"PQ00002_Nhà phố mặt hẻm_Hòn Thơm_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt hẻm","Khu vực 12":"Hòn Thơm","Địa chỉ":"Đường 30\/4","Diện tích (m²)":90,"Giá niêm yết (VND)":11877000000,"Tình trạng":"Đã cọc"},{"Mã BĐS":"PQ00003","Tên Sản Phẩm":"PQ00003_Nhà phố mặt tiền_Bãi Vòng_Tỉnh lộ 975_Thổ cư","Loại BĐS ng ta đang đầu tư":"Nhà phố mặt tiền","Khu vực 12":"Bãi Vòng","Địa chỉ":"Tỉnh lộ 975","Diện tích (m²)":220,"Giá niêm yết (VND)":20063000000,"Tình trạng":"Đã bán"},{"Mã BĐS":"PQ00004","Tên Sản Phẩm":"PQ00004_Boutique resort_Suối Tiên_Tỉnh lộ 975_Thổ cư","Loại BĐS ng ta đang đầu tư":"Boutique resort","Khu vực 12":"Suối Tiên","Địa chỉ":"Tỉnh lộ 975","Diện tích (m²)":400,"Giá niêm yết (VND)":39932000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00004","Tên Sản Phẩm":"PQ00004_Boutique resort_Suối Tiên_Tỉnh lộ 975_Thổ cư","Loại BĐS ng ta đang đầu tư":"Boutique resort","Khu vực 12":"Suối Tiên","Địa chỉ":"Tỉnh lộ 975","Diện tích (m²)":400,"Giá niêm yết (VND)":39932000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00005","Tên Sản Phẩm":"PQ00005_Mini hotel_Bãi Sao_Đường ĐT46_Thổ cư","Loại BĐS ng ta đang đầu tư":"Mini hotel","Khu vực 12":"Bãi Sao","Địa chỉ":"Đường ĐT46","Diện tích (m²)":126,"Giá niêm yết (VND)":19660000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00005","Tên Sản Phẩm":"PQ00005_Mini hotel_Bãi Sao_Đường ĐT46_Thổ cư","Loại BĐS ng ta đang đầu tư":"Mini hotel","Khu vực 12":"Bãi Sao","Địa chỉ":"Đường ĐT46","Diện tích (m²)":126,"Giá niêm yết (VND)":19660000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00005","Tên Sản Phẩm":"PQ00005_Mini hotel_Bãi Sao_Đường ĐT46_Thổ cư","Loại BĐS ng ta đang đầu tư":"Mini hotel","Khu vực 12":"Bãi Sao","Địa chỉ":"Đường ĐT46","Diện tích (m²)":126,"Giá niêm yết (VND)":19488000000,"Tình trạng":"Giữ chỗ"},{"Mã BĐS":"PQ00006","Tên Sản Phẩm":"PQ00006_Boutique resort_Bãi Trường_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Boutique resort","Khu vực 12":"Bãi Trường","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":525,"Giá niêm yết (VND)":81632000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00006","Tên Sản Phẩm":"PQ00006_Boutique resort_Bãi Trường_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Boutique resort","Khu vực 12":"Bãi Trường","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":525,"Giá niêm yết (VND)":81632000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00007","Tên Sản Phẩm":"PQ00007_Shophouse_Hàm Ninh_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Shophouse","Khu vực 12":"Hàm Ninh","Địa chỉ":"Đường 30\/4","Diện tích (m²)":140,"Giá niêm yết (VND)":17580000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00007","Tên Sản Phẩm":"PQ00007_Shophouse_Hàm Ninh_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Shophouse","Khu vực 12":"Hàm Ninh","Địa chỉ":"Đường 30\/4","Diện tích (m²)":140,"Giá niêm yết (VND)":17580000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00007","Tên Sản Phẩm":"PQ00007_Shophouse_Hàm Ninh_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Shophouse","Khu vực 12":"Hàm Ninh","Địa chỉ":"Đường 30\/4","Diện tích (m²)":140,"Giá niêm yết (VND)":18162000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00008","Tên Sản Phẩm":"PQ00008_Căn hộ biển_Bãi Khem_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Căn hộ biển","Khu vực 12":"Bãi Khem","Địa chỉ":"Đường 30\/4","Diện tích (m²)":60,"Giá niêm yết (VND)":4370000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00008","Tên Sản Phẩm":"PQ00008_Căn hộ biển_Bãi Khem_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Căn hộ biển","Khu vực 12":"Bãi Khem","Địa chỉ":"Đường 30\/4","Diện tích (m²)":60,"Giá niêm yết (VND)":4370000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00008","Tên Sản Phẩm":"PQ00008_Căn hộ biển_Bãi Khem_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Căn hộ biển","Khu vực 12":"Bãi Khem","Địa chỉ":"Đường 30\/4","Diện tích (m²)":60,"Giá niêm yết (VND)":4631000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00009","Tên Sản Phẩm":"PQ00009_Khách sạn mini_Bãi Vòng_Đường 30\/4_Thổ cư","Loại BĐS ng ta đang đầu tư":"Khách sạn mini","Khu vực 12":"Bãi Vòng","Địa chỉ":"Đường 30\/4","Diện tích (m²)":160,"Giá niêm yết (VND)":13080000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00010","Tên Sản Phẩm":"PQ00010_Đất mặt tiền biển_Rạch Vẹm_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Đất mặt tiền biển","Khu vực 12":"Rạch Vẹm","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":440,"Giá niêm yết (VND)":33410000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00010","Tên Sản Phẩm":"PQ00010_Đất mặt tiền biển_Rạch Vẹm_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Đất mặt tiền biển","Khu vực 12":"Rạch Vẹm","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":440,"Giá niêm yết (VND)":30895000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00010","Tên Sản Phẩm":"PQ00010_Đất mặt tiền biển_Rạch Vẹm_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Đất mặt tiền biển","Khu vực 12":"Rạch Vẹm","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":440,"Giá niêm yết (VND)":30895000000,"Tình trạng":"Sẵn bán"},{"Mã BĐS":"PQ00010","Tên Sản Phẩm":"PQ00010_Đất mặt tiền biển_Rạch Vẹm_Đường Nguyễn Trung Trực_Thổ cư","Loại BĐS ng ta đang đầu tư":"Đất mặt tiền biển","Khu vực 12":"Rạch Vẹm","Địa chỉ":"Đường Nguyễn Trung Trực","Diện tích (m²)":440,"Giá niêm yết (VND)":30895000000,"Tình trạng":"Giữ chỗ"}];
+                    
+                    // Nếu vẫn không có data fallback
+                    if (RAW_DATA.length === 0) {
+                        showEmptyState("Lỗi kết nối", "Không thể truy cập dữ liệu từ Google Sheets. Vui lòng kiểm tra lại đường link API.");
+                    } else {
+                        // Dùng data fallback
+                        console.warn("Đang sử dụng dữ liệu tĩnh dự phòng.");
+                        initFilters();
+                        applyFilters();
+                    }
+                });
+        }
+
+        function showEmptyState(title, desc) {
+            document.getElementById('productGrid').classList.add('hidden');
+            const empty = document.getElementById('emptyState');
+            empty.classList.remove('hidden');
+            document.getElementById('emptyTitle').textContent = title;
+            document.getElementById('emptyDesc').textContent = desc;
+            document.getElementById('kpi-total').textContent = '(0)';
+        }
+
+        function renderCards(data) {
+            const grid = document.getElementById('productGrid');
+            const empty = document.getElementById('emptyState');
+            
+            grid.innerHTML = '';
+            
+            if (data.length === 0) {
+                grid.classList.add('hidden');
+                empty.classList.remove('hidden');
+                document.getElementById('emptyTitle').textContent = "Không có kết quả chính xác";
+                document.getElementById('emptyDesc').textContent = "Thử thay đổi hoặc xóa một số bộ lọc của bạn.";
+                document.getElementById('kpi-total').textContent = '(0)';
+                return;
+            }
+            
+            grid.classList.remove('hidden');
+            empty.classList.add('hidden');
+            document.getElementById('kpi-total').textContent = `(${data.length})`;
+
+            const fragment = document.createDocumentFragment();
+            
+            data.forEach(item => {
+                // Determine image tone based on type to simulate varied high-end photos
+                let imgHue = 0;
+                let type = item['Loại BĐS ng ta đang đầu tư'] || '';
+                if (type.includes('Biệt thự')) { imgHue = 120; }
+                if (type.includes('Đất')) { imgHue = 45; }
+                if (type.includes('Khách sạn') || type.includes('Resort')) { imgHue = 200; }
+
+                const card = document.createElement('div');
+                card.className = 'luxe-card cursor-pointer group flex flex-col gap-3';
+                
+                // Badge Logic
+                let badgeHTML = '';
+                if (item['Tình trạng'] === 'Sẵn bán') {
+                    badgeHTML = `<div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[11px] font-bold text-luxe-black shadow-sm z-10">Guest Favorite</div>`;
+                } else {
+                    badgeHTML = `<div class="absolute top-3 left-3 bg-luxe-black/80 backdrop-blur px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm z-10">${item['Tình trạng']}</div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="card-img-wrap relative aspect-[20/19] bg-gray-100">
+                        ${badgeHTML}
+                        <!-- Favorite Heart Icon Top Right -->
+                        <button class="absolute top-3 right-3 z-10 p-1 group-hover:scale-110 transition-transform">
+                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: rgba(0, 0, 0, 0.5); height: 24px; width: 24px; stroke: white; stroke-width: 2; overflow: visible;"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z"></path></svg>
+                        </button>
+                        
+                        <!-- Simulated Image -->
+                        <div class="card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 mix-blend-multiply" style="filter: hue-rotate(${imgHue}deg) saturate(0.5);"></div>
+                        
+                        <!-- Dots indicating a carousel (UI only) -->
+                        <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white/50"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white/50"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white/50"></div>
+                            <div class="w-1 h-1.5 rounded-full bg-white/50 mt-0.5"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-semibold text-[15px] text-luxe-black truncate pr-4">${item['Khu vực 12'] || 'Phú Quốc'}</h3>
+                            <div class="flex items-center gap-1 flex-shrink-0">
+                                <span class="text-[13px] text-luxe-black font-semibold">${item['Mã BĐS']}</span>
+                            </div>
+                        </div>
+                        <p class="text-[15px] text-luxe-gray mt-0.5 truncate">${item['Địa chỉ'] || ''}</p>
+                        <p class="text-[15px] text-luxe-gray mt-0.5">${type} • ${formatArea(item['Diện tích (m²)'])}</p>
+                        
+                        <div class="mt-1.5">
+                            <span class="font-semibold text-[15px] text-luxe-black">${formatMoney(item['Giá niêm yết (VND)'])}</span>
+                            <span class="text-[15px] text-luxe-black font-light ml-1">tổng</span>
+                        </div>
+                    </div>
+                `;
+                fragment.appendChild(card);
+            });
+            
+            grid.appendChild(fragment);
+        }
+
+        function initFilters() {
+            const types = [...new Set(RAW_DATA.map(i => i['Loại BĐS ng ta đang đầu tư']))].filter(Boolean);
+            const typeContainer = document.getElementById('filter-type');
+            typeContainer.innerHTML = '';
+            
+            const createFilterPill = (val, label, isFirst = false) => {
+                const btn = document.createElement('button');
+                btn.className = `filter-pill flex flex-col items-center justify-center gap-2 min-w-[72px] px-2 py-3 rounded-xl border-b-2 border-transparent transition-all ${isFirst ? 'text-luxe-black border-luxe-black active' : 'text-gray-500 opacity-80'}`;
+                btn.dataset.value = val;
+                
+                // SVG Icons based on type string matching
+                let svgPath = 'M3 13h18M5 13v8a2 2 0 002 2h10a2 2 0 002-2v-8M9 21v-8M15 21v-8M5 13l7-8.5L19 13'; // Default house
+                if (val.includes('Biệt thự') || val.includes('Resort')) svgPath = 'M3 21h18M5 21v-14a2 2 0 012-2h10a2 2 0 012 2v14M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4';
+                if (val.includes('Đất')) svgPath = 'M2 20h20M5 20L10 10l5 5 4-8 5 13';
+                if (val === 'all') svgPath = 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z';
+                
+                btn.innerHTML = `
+                    <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="${svgPath}"></path></svg>
+                    <span class="text-[12px] font-medium whitespace-nowrap">${label}</span>
+                `;
+                
+                btn.onclick = (e) => toggleType(e.currentTarget, val);
+                return btn;
+            };
+            
+            typeContainer.appendChild(createFilterPill('all', 'Tất cả', true));
+            types.forEach(type => typeContainer.appendChild(createFilterPill(type, type)));
+
+            document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+            document.getElementById('sortSelect').addEventListener('change', applyFilters);
+        }
+
+        let selectedType = 'all';
+        function toggleType(el, val) {
+            document.querySelectorAll('#filter-type button').forEach(btn => {
+                btn.classList.remove('text-luxe-black', 'border-luxe-black', 'active');
+                btn.classList.add('text-gray-500', 'opacity-80', 'border-transparent');
+            });
+            el.classList.remove('text-gray-500', 'opacity-80', 'border-transparent');
+            el.classList.add('text-luxe-black', 'border-luxe-black', 'active');
+            selectedType = val;
+            applyFilters();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('sortSelect').value = 'price-desc';
+            const allBtn = document.querySelector('#filter-type button[data-value="all"]');
+            if(allBtn) toggleType(allBtn, 'all');
+            else applyFilters();
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const sort = document.getElementById('sortSelect').value;
+
+            filteredData = RAW_DATA.filter(item => {
+                const searchableStr = `${item['Mã BĐS'] || ''} ${item['Tên Sản Phẩm'] || ''} ${item['Khu vực 12'] || ''} ${item['Địa chỉ'] || ''}`.toLowerCase();
+                if (searchTerm && !searchableStr.includes(searchTerm)) return false;
+                if (selectedType !== 'all' && item['Loại BĐS ng ta đang đầu tư'] !== selectedType) return false;
+                return true;
+            });
+
+            filteredData.sort((a, b) => {
+                const priceA = parseFloat(a['Giá niêm yết (VND)']) || 0;
+                const priceB = parseFloat(b['Giá niêm yết (VND)']) || 0;
+                const areaA = parseFloat(a['Diện tích (m²)']) || 0;
+                const areaB = parseFloat(b['Diện tích (m²)']) || 0;
+                
+                if (sort === 'price-desc') return priceB - priceA;
+                if (sort === 'price-asc') return priceA - priceB;
+                if (sort === 'area-desc') return areaB - areaA;
+                return 0;
+            });
+
+            renderCards(filteredData);
+        }
+    </script>
+</body>
+</html>
