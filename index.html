@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PhuQuoc Luxe Portfolio</title>
     
+    <!-- Typography: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -27,7 +29,7 @@
         body { color: #222222; -webkit-font-smoothing: antialiased; background-color: #ffffff; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .card-img-wrap { overflow: hidden; border-radius: 12px; position: relative; }
+        .card-img-wrap { overflow: hidden; border-radius: 12px; position: relative; background-color: #f3f4f6; }
         .card-img { transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .luxe-card:hover .card-img { transform: scale(1.05); }
         .filter-pill { transition: all 0.2s ease; }
@@ -44,6 +46,7 @@
 </head>
 <body class="bg-white min-h-screen flex flex-col">
 
+    <!-- Header -->
     <header class="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div class="px-6 md:px-10 lg:px-20 h-20 flex items-center justify-between">
             <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
@@ -73,12 +76,14 @@
         </div>
     </header>
 
+    <!-- Filter Bar -->
     <div class="sticky top-20 z-40 bg-white shadow-sm border-b border-gray-100">
         <div class="px-6 md:px-10 lg:px-20 py-4">
             <div class="flex items-center gap-4 overflow-x-auto no-scrollbar pb-1" id="filter-type"></div>
         </div>
     </div>
 
+    <!-- Main Content -->
     <main class="flex-1 px-6 md:px-10 lg:px-20 py-8 flex flex-col">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <h2 class="text-2xl font-semibold tracking-tight text-luxe-black">Bộ sưu tập <span id="kpi-total" class="text-gray-500 text-xl font-normal ml-1">(Đang tải...)</span></h2>
@@ -96,13 +101,16 @@
             </div>
         </div>
 
+        <!-- Product Grid -->
         <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+            <!-- Loading Skeletons -->
             <div class="animate-pulse flex flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
             <div class="hidden sm:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
             <div class="hidden lg:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
             <div class="hidden xl:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
         </div>
 
+        <!-- Empty State -->
         <div id="emptyState" class="hidden py-32 flex-col items-center justify-center text-center">
             <h3 class="text-2xl font-semibold text-luxe-black mb-2" id="emptyTitle">Không có kết quả chính xác</h3>
             <p class="text-base text-gray-500 mb-6" id="emptyDesc">Thử thay đổi hoặc xóa một số bộ lọc của bạn.</p>
@@ -110,6 +118,7 @@
         </div>
     </main>
 
+    <!-- Script -->
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwXG6fwAEg_soSkEsze-BOrpUD9RH5MSZAUTFzT_XxjVCupi5qWM1e7LswyZcsg8N3F/exec";
         
@@ -159,7 +168,7 @@
                 .catch(error => {
                     console.error("Fetch Error:", error);
                     document.getElementById('syncStatus').textContent = "Lỗi kết nối API";
-                    showEmptyState("Lỗi kết nối", "Không thể lấy dữ liệu từ Google Sheets. Hãy kiểm tra lại quyền truy cập 'Anyone' trong Deploy Apps Script.");
+                    showEmptyState("Lỗi kết nối", "Không thể lấy dữ liệu từ Google Sheets. Hãy kiểm tra lại quyền truy cập 'Anyone' và tạo 'New version' khi Deploy Apps Script.");
                 });
         }
 
@@ -170,6 +179,33 @@
             document.getElementById('emptyTitle').textContent = title;
             document.getElementById('emptyDesc').textContent = desc;
             document.getElementById('kpi-total').textContent = '(0)';
+        }
+
+        // Hàm thông minh chuyển đổi mọi định dạng link/ID Google Drive thành link ảnh trực tiếp
+        function getDriveDirectLink(urlOrId) {
+            if (!urlOrId) return '';
+            let str = String(urlOrId).trim();
+            let fileId = '';
+
+            // Nếu người dùng dán nguyên link chia sẻ của Google Drive
+            if (str.includes('drive.google.com') || str.includes('docs.google.com')) {
+                const matchId = str.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (matchId && matchId[1]) {
+                    fileId = matchId[1];
+                } else {
+                    const matchIdParam = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                    if (matchIdParam && matchIdParam[1]) fileId = matchIdParam[1];
+                }
+            } else {
+                // Nếu người dùng chỉ dán trực tiếp chuỗi ID
+                fileId = str;
+            }
+
+            if (fileId) {
+                // Sử dụng endpoint chuẩn xác hiển thị ảnh trực tiếp của Google Drive
+                return `https://lh3.googleusercontent.com/d/${fileId}`;
+            }
+            return str; // Trả về nguyên bản nếu là một URL thông thường khác
         }
 
         function renderCards(data) {
@@ -200,10 +236,8 @@
                 if (type.includes('Đất')) imgHue = 45;
                 if (type.includes('Khách sạn') || type.includes('Resort')) imgHue = 200;
 
-                let coverImg = item['Ảnh Bìa'] || '';
-                if (coverImg && !coverImg.includes('http') && coverImg.length > 5) {
-                    coverImg = `https://drive.google.com/uc?export=view&id=${coverImg}`;
-                }
+                // Xử lý Ảnh Bìa thông qua hàm chuẩn Google Drive
+                let coverImg = getDriveDirectLink(item['Ảnh Bìa']);
 
                 const card = document.createElement('div');
                 card.className = 'luxe-card cursor-pointer group flex flex-col gap-3';
@@ -218,7 +252,7 @@
                     : `<div class="card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 mix-blend-multiply" style="filter: hue-rotate(${imgHue}deg) saturate(0.5);"></div>`;
 
                 card.innerHTML = `
-                    <div class="card-img-wrap aspect-[20/19] bg-gray-100">
+                    <div class="card-img-wrap aspect-[20/19]">
                         ${badgeHTML}
                         <button class="absolute top-3 right-3 z-10 p-1 group-hover:scale-110 transition-transform">
                             <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: rgba(0, 0, 0, 0.5); height: 24px; width: 24px; stroke: white; stroke-width: 2; overflow: visible;"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z"></path></svg>
@@ -296,7 +330,7 @@
 
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const sort = document.getElementById('sortSelect').value;
+            const sort = document.getElementById('sortSelect' ).value;
 
             filteredData = RAW_DATA.filter(item => {
                 const searchableStr = `${item['Mã BĐS'] || ''} ${item['Tên Sản Phẩm'] || ''} ${item['Khu vực 12'] || ''} ${item['Địa chỉ'] || ''}`.toLowerCase();
@@ -309,7 +343,7 @@
                 const priceA = parseFloat(a['Giá niêm yết (VND)']) || 0;
                 const priceB = parseFloat(b['Giá niêm yết (VND)']) || 0;
                 const areaA = parseFloat(a['Diện tích (m²)']) || 0;
-                const areaB = parseFloat(b['Diện tích (m²)']) || 0;
+                const areaB = parseFloat(b['Diện tích m²'] || b['Diện tích (m²)']) || 0;
                 
                 if (sort === 'price-desc') return priceB - priceA;
                 if (sort === 'price-asc') return priceA - priceB;
