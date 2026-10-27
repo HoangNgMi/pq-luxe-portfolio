@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#022c22">
+    <title>PhuQuoc Exclusive | Portfolio</title>
+    
+    <!-- Elegant Fonts: Playfair Display for headings, Plus Jakarta Sans for data -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        luxury: {
+                            950: '#022c22', 
+                            900: '#064e3b',
+                            gold: '#d4af37', 
+                            champagne: '#fef08a',
+                            light: '#fafaf9', 
+                            border: '#e5e7eb'
+                        }
+                    },
+                    aspectRatio: {
+                        'luxe-card': '20 / 19',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #fafaf9; -webkit-font-smoothing: antialiased; }
+        
+        /* Refined Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Subtle interactions */
+        .luxury-card { transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease; }
+        .luxury-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); border-color: #d4af37; }
+        .image-zoom { transition: transform 0.8s ease; }
+        .luxury-card:hover .image-zoom { transform: scale(1.05); }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Luxury Header -->
+    <header class="sticky top-0 z-50 bg-luxury-950 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+                <div class="w-8 h-8 flex items-center justify-center border border-luxury-gold/50 rounded-sm">
+                    <span class="font-serif font-bold text-luxury-gold text-lg">P</span>
+                </div>
+                <div>
+                    <h1 class="font-serif font-semibold text-lg tracking-wide text-white">PhuQuoc Exclusive</h1>
+                    <p class="text-[9px] uppercase tracking-[0.2em] text-luxury-gold/80">Private Portfolio</p>
+                </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-4 text-sm text-slate-300">
+                <span class="font-serif italic">Curated Collection</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- KPI Strip -->
+    <section class="bg-white border-b border-luxury-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div class="flex gap-8 overflow-x-auto hide-scroll">
+                <div class="min-w-fit">
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Bộ Sưu Tập</p>
+                    <p class="font-serif text-2xl text-luxury-950 mt-1" id="kpi-total">-- <span class="text-sm font-sans text-slate-400 italic">BĐS</span></p>
+                </div>
+                <div class="min-w-fit border-l border-slate-100 pl-8">
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Sẵn Sàng Giao Dịch</p>
+                    <p class="font-serif text-2xl text-luxury-gold mt-1" id="kpi-active">--</p>
+                </div>
+                <div class="min-w-fit border-l border-slate-100 pl-8">
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Tổng Định Giá</p>
+                    <p class="font-serif text-2xl text-luxury-950 mt-1" id="kpi-value">-- <span class="text-sm font-sans text-slate-400">Tỷ VND</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl
