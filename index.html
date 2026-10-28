@@ -47,16 +47,23 @@
             box-shadow: 0 2px 6px rgba(255,56,92,0.3);
         }
 
-        /* Secondary pill (Giá / Diện tích) — viền mảnh, nhỏ gọn hơn category pill */
+        /* Secondary pill (Giá / Diện tích) — cùng cỡ chữ với category pill (14px) */
         .sub-pill {
             transition: all 0.15s ease; background: #fff; color: #222;
             border: 1px solid #ddd; border-radius: 999px; white-space: nowrap;
-            flex-shrink: 0; font-weight: 500; cursor: pointer; padding: 5px 11px; font-size: 12.5px;
+            flex-shrink: 0; font-weight: 500; cursor: pointer; padding: 8px 16px; font-size: 14px;
         }
         .sub-pill:hover { border-color: #222; }
         .sub-pill.active { background: #222; color: #fff; border-color: #222; }
         /* Trên mobile bottom-sheet, pill to hơn cho dễ bấm */
         #filter-price-m .sub-pill, #filter-area-m .sub-pill { padding: 10px 16px; font-size: 14px; }
+
+        /* Nhãn nhóm (Khu vực / Giá / Diện tích) — pill tròn đỏ nhạt, cùng cỡ chữ */
+        .filter-label-pill {
+            background: #FF8095; color: #fff; border-radius: 999px;
+            padding: 8px 16px; font-size: 14px; font-weight: 600;
+            white-space: nowrap; flex-shrink: 0; letter-spacing: 0.2px;
+        }
 
         .luxe-input {
             border: 1px solid #DDDDDD; border-radius: 999px;
@@ -120,7 +127,7 @@
 
             <div class="hidden md:flex flex-1 max-w-sm mx-6">
                 <div class="w-full luxe-input flex items-center px-4 py-2 cursor-text">
-                    <input type="text" id="searchInput" placeholder="Tìm kiếm địa danh, mã BĐS..." class="flex-1 bg-transparent border-none outline-none text-sm font-medium text-luxe-black placeholder-gray-500">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm khu vực (Dương Đông), mã BĐS, diện tích, giá..." class="flex-1 bg-transparent border-none outline-none text-sm font-medium text-luxe-black placeholder-gray-500">
                     <div class="w-8 h-8 rounded-full bg-luxe-accent flex items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
@@ -140,7 +147,7 @@
     <!-- Mobile search -->
     <div class="md:hidden px-6 py-3 border-b border-gray-100">
         <div class="w-full luxe-input flex items-center px-4 py-2">
-            <input type="text" id="searchInputMobile" placeholder="Tìm kiếm địa danh, mã BĐS..." class="flex-1 bg-transparent border-none outline-none text-sm font-medium">
+            <input type="text" id="searchInputMobile" placeholder="Tìm kiếm khu vực (Dương Đông), mã BĐS, diện tích, giá..." class="flex-1 bg-transparent border-none outline-none text-sm font-medium">
             <svg class="w-4 h-4 text-luxe-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
     </div>
@@ -152,25 +159,25 @@
             <div class="flex items-center gap-3 overflow-x-auto no-scrollbar py-1" id="filter-type"></div>
 
             <!-- Tầng 2 desktop: Khu vực + Giá + Diện tích -->
-            <div class="hidden md:flex items-center gap-3 mt-2.5 pt-2.5 border-t border-gray-100 overflow-x-auto no-scrollbar">
+            <div class="hidden md:flex items-center gap-2.5 mt-2.5 pt-2.5 border-t border-gray-100 overflow-x-auto no-scrollbar">
                 <!-- Khu vực dropdown -->
-                <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <span class="text-[11px] font-bold uppercase tracking-wide" style="color:#FF385C;">Khu vực</span>
-                    <select id="filter-khuvuc" class="border border-gray-300 rounded-full px-3 py-1 text-[13px] font-medium hover:border-gray-900 transition-colors focus:outline-none cursor-pointer bg-white">
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <span class="filter-label-pill">Khu vực</span>
+                    <select id="filter-khuvuc" class="border border-gray-300 rounded-full px-4 py-2 text-sm font-medium hover:border-gray-900 transition-colors focus:outline-none cursor-pointer bg-white">
                         <option value="all">Tất cả khu vực</option>
                     </select>
                 </div>
-                <div class="w-px h-5 bg-gray-200 flex-shrink-0"></div>
+                <div class="w-px h-6 bg-gray-200 flex-shrink-0"></div>
                 <!-- Giá (pill lướt ngang) -->
-                <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <span class="text-[11px] font-bold uppercase tracking-wide" style="color:#FF385C;">Giá</span>
-                    <div class="flex items-center gap-1.5" id="filter-price"></div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <span class="filter-label-pill">Giá</span>
+                    <div class="flex items-center gap-2" id="filter-price"></div>
                 </div>
-                <div class="w-px h-5 bg-gray-200 flex-shrink-0"></div>
+                <div class="w-px h-6 bg-gray-200 flex-shrink-0"></div>
                 <!-- Diện tích (pill lướt ngang) -->
-                <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <span class="text-[11px] font-bold uppercase tracking-wide" style="color:#FF385C;">Diện tích</span>
-                    <div class="flex items-center gap-1.5" id="filter-area"></div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <span class="filter-label-pill">Diện tích</span>
+                    <div class="flex items-center gap-2" id="filter-area"></div>
                 </div>
             </div>
 
