@@ -344,10 +344,13 @@
             return `https://zalo.me/${ZALO_PHONE}?text=${encodeURIComponent(msg)}`;
         }
 
-        // Lấy link PDF của BĐS từ cột "File PDF" (trả '' nếu chưa có)
+        // PDF mẫu tạm (dùng chung cho mọi card khi test). Sau này điền cột "File PDF" sẽ tự thay.
+        const SAMPLE_PDF = "https://res.cloudinary.com/f1q704d5/image/upload/v1793167796/Data_101_For_Leaders.pdf";
+        // Lấy link PDF: ưu tiên cột "File PDF", nếu trống → dùng PDF mẫu
         function pdfLinkForItem(item) {
             const url = String(item['File PDF'] || '').trim();
-            return url.startsWith('http') ? url : '';
+            if (url.startsWith('http')) return url;
+            return SAMPLE_PDF.startsWith('http') ? SAMPLE_PDF : '';
         }
 
         const PAGE_SIZE = 30;         // 30 sp / trang (yêu cầu)
