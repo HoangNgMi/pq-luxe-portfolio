@@ -2,15 +2,13 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PhuQuoc Luxe Portfolio</title>
-    
-    <!-- Typography: Inter -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>batdongsanphuquoc.com</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -19,8 +17,7 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         luxe: { black: '#222222', gray: '#717171', light: '#ebebeb', accent: '#FF385C' }
-                    },
-                    aspectRatio: { 'luxe-card': '20 / 19' }
+                    }
                 }
             }
         }
@@ -32,7 +29,8 @@
         .card-img-wrap { overflow: hidden; border-radius: 12px; position: relative; background-color: #f3f4f6; }
         .card-img { transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .luxe-card:hover .card-img { transform: scale(1.05); }
-        /* Filter pill kiểu "âm tường" Airbnb: nền xám nhạt, bo tròn, chọn thì đổi nền */
+
+        /* Filter pill kiểu "âm tường" Airbnb */
         .filter-pill {
             transition: all 0.18s ease;
             background-color: #f7f7f7;
@@ -43,23 +41,57 @@
             flex-shrink: 0;
             font-weight: 500;
         }
-        .filter-pill:hover {
-            background-color: #ebebeb;
-            transform: translateY(-1px);
-        }
+        .filter-pill:hover { background-color: #ebebeb; transform: translateY(-1px); }
         .filter-pill.active {
-            background-color: #FF385C;
-            color: #ffffff;
-            border-color: #FF385C;
+            background-color: #FF385C; color: #ffffff; border-color: #FF385C;
             box-shadow: 0 2px 6px rgba(255,56,92,0.3);
         }
+
         .luxe-input {
-            border: 1px solid #DDDDDD;
-            border-radius: 999px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-            transition: box-shadow 0.2s ease;
+            border: 1px solid #DDDDDD; border-radius: 999px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08); transition: box-shadow 0.2s ease;
         }
         .luxe-input:focus-within { box-shadow: 0 2px 4px rgba(0,0,0,0.18); }
+
+        /* View toggle (Grid / Danh mục) */
+        .view-tab {
+            transition: all 0.18s ease; border-radius: 999px; font-weight: 500;
+            color: #717171; background: transparent;
+        }
+        .view-tab.active { background: #222222; color: #fff; }
+
+        /* Carousel scroll row */
+        .carousel-row {
+            display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth;
+            scroll-snap-type: x mandatory; padding-bottom: 8px;
+        }
+        .carousel-row > * { scroll-snap-align: start; flex: 0 0 auto; }
+        .carousel-card { width: 260px; }
+        @media (max-width: 640px) { .carousel-card { width: 75vw; } }
+
+        /* Carousel nav buttons */
+        .carousel-nav {
+            position: absolute; top: 40%; transform: translateY(-50%);
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #fff; border: 1px solid #ddd; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            z-index: 10; transition: all 0.15s; opacity: 0;
+        }
+        .carousel-section:hover .carousel-nav { opacity: 1; }
+        .carousel-nav:hover { transform: translateY(-50%) scale(1.08); }
+        .carousel-nav.left { left: -8px; }
+        .carousel-nav.right { right: -8px; }
+        @media (max-width: 640px) { .carousel-nav { display: none; } }
+
+        /* Pagination */
+        .page-btn {
+            min-width: 40px; height: 40px; border-radius: 8px; border: 1px solid #ddd;
+            background: #fff; color: #222; font-weight: 500; cursor: pointer;
+            transition: all 0.15s; display: inline-flex; align-items: center; justify-content: center;
+        }
+        .page-btn:hover:not(:disabled) { border-color: #222; }
+        .page-btn.active { background: #222; color: #fff; border-color: #222; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     </style>
 </head>
 <body class="bg-white min-h-screen flex flex-col">
@@ -74,7 +106,7 @@
                 </svg>
                 <span class="font-bold tracking-tight text-xl hidden sm:block" style="color:#FF385C;">batdongsanphuquoc<span class="font-light text-luxe-black">.com</span></span>
             </div>
-            
+
             <div class="hidden md:flex flex-1 max-w-sm mx-6">
                 <div class="w-full luxe-input flex items-center px-4 py-2 cursor-text">
                     <input type="text" id="searchInput" placeholder="Tìm kiếm địa danh, mã BĐS..." class="flex-1 bg-transparent border-none outline-none text-sm font-medium text-luxe-black placeholder-gray-500">
@@ -94,39 +126,68 @@
         </div>
     </header>
 
+    <!-- Mobile search -->
+    <div class="md:hidden px-6 py-3 border-b border-gray-100">
+        <div class="w-full luxe-input flex items-center px-4 py-2">
+            <input type="text" id="searchInputMobile" placeholder="Tìm kiếm địa danh, mã BĐS..." class="flex-1 bg-transparent border-none outline-none text-sm font-medium">
+            <svg class="w-4 h-4 text-luxe-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+    </div>
+
     <!-- Filter Bar -->
     <div class="sticky top-20 z-40 bg-white shadow-sm border-b border-gray-100">
-        <div class="px-6 md:px-10 lg:px-20 py-4">
+        <div class="px-6 md:px-10 lg:px-20 py-3">
             <div class="flex items-center gap-3 overflow-x-auto no-scrollbar py-1" id="filter-type"></div>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <main class="flex-1 px-6 md:px-10 lg:px-20 py-8 flex flex-col">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <h2 class="text-2xl font-semibold tracking-tight text-luxe-black">Bộ sưu tập <span id="kpi-total" class="text-gray-500 text-xl font-normal ml-1">(Đang tải...)</span></h2>
-            
-            <div class="flex items-center gap-2">
-                <select id="sortSelect" class="border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium hover:border-gray-900 transition-colors focus:outline-none cursor-pointer bg-white appearance-none">
+
+            <div class="flex items-center gap-3 flex-wrap">
+                <!-- View toggle -->
+                <div class="flex items-center gap-1 bg-gray-100 rounded-full p-1">
+                    <button id="tab-grid" onclick="switchView('grid')" class="view-tab active px-4 py-2 text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <span class="hidden sm:inline">Lưới</span>
+                    </button>
+                    <button id="tab-category" onclick="switchView('category')" class="view-tab px-4 py-2 text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        <span class="hidden sm:inline">Danh mục</span>
+                    </button>
+                </div>
+
+                <select id="sortSelect" class="border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium hover:border-gray-900 transition-colors focus:outline-none cursor-pointer bg-white">
                     <option value="price-desc">Giá giảm dần</option>
                     <option value="price-asc">Giá tăng dần</option>
                     <option value="area-desc">Diện tích lớn nhất</option>
                 </select>
                 <button onclick="resetFilters()" class="border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium hover:border-gray-900 transition-colors flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Xóa lọc
+                    <span class="hidden sm:inline">Xóa lọc</span>
                 </button>
             </div>
         </div>
 
-        <!-- Product Grid -->
-        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
-            <!-- Loading Skeletons -->
-            <div class="animate-pulse flex flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
-            <div class="hidden sm:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
-            <div class="hidden lg:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
-            <div class="hidden xl:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
+        <!-- VIEW 1: GRID + PAGINATION -->
+        <div id="view-grid">
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-6 gap-y-10">
+                <!-- Skeletons -->
+                <div class="animate-pulse flex flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
+                <div class="hidden sm:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
+                <div class="hidden lg:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
+                <div class="hidden xl:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
+                <div class="hidden xl:flex animate-pulse flex-col gap-3"><div class="rounded-xl bg-gray-200 aspect-[20/19] w-full"></div><div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-3 bg-gray-200 rounded w-1/2"></div></div></div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="flex items-center justify-center gap-2 mt-12 flex-wrap"></div>
         </div>
+
+        <!-- VIEW 2: CATEGORY CAROUSELS -->
+        <div id="view-category" class="hidden flex-col gap-12"></div>
 
         <!-- Empty State -->
         <div id="emptyState" class="hidden py-32 flex-col items-center justify-center text-center">
@@ -136,234 +197,326 @@
         </div>
     </main>
 
-    <!-- Script -->
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwXG6fwAEg_soSkEsze-BOrpUD9RH5MSZAUTFzT_XxjVCupi5qWM1e7LswyZcsg8N3F/exec";
-        
+        const SAMPLE_IMG = "https://res.cloudinary.com/f1q704d5/image/upload/w_800,q_auto,f_auto/v1793162611/PQ0001_1.jpg";
+
+        const PAGE_SIZE = 30;         // 30 sp / trang (yêu cầu)
+        const CAROUSEL_LIMIT = 15;    // tối đa 15 sp mỗi carousel category
+
         let RAW_DATA = [];
         let filteredData = [];
         let selectedType = 'all';
+        let currentView = 'grid';     // 'grid' | 'category'
+        let currentPage = 1;
 
-        // Ảnh mẫu tạm (Cloudinary) — dùng cho mọi card khi chưa có ảnh riêng từng BĐS.
-        // q_auto = tự tối ưu chất lượng, f_auto = tự chọn format (WebP/AVIF), w_800 = resize.
-        const SAMPLE_IMG = "https://res.cloudinary.com/f1q704d5/image/upload/w_800,q_auto,f_auto/v1793162611/PQ0001_1.jpg";
-
+        // ---------- Helpers ----------
         const formatMoney = (val) => {
-            if (!val || isNaN(val)) return 'Liên hệ';
-            const ty = val / 1000000000;
+            const num = typeof val === 'number' ? val : parseFloat(String(val).replace(/[^0-9.-]/g, ''));
+            if (!num || isNaN(num)) return 'Liên hệ';
+            const ty = num / 1000000000;
             return ty % 1 === 0 ? ty + ' tỷ' : ty.toFixed(1).replace('.', ',') + ' tỷ';
         };
-        
         const formatArea = (val) => val ? val + ' m²' : '';
-        
         const debounce = (func, wait) => {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func(...args), wait);
-            };
+            let t; return (...a) => { clearTimeout(t); t = setTimeout(() => func(...a), wait); };
         };
+        const priceNum = (v) => typeof v === 'number' ? v : (parseFloat(String(v).replace(/[^0-9.-]/g, '')) || 0);
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchData();
-        });
+        // ---------- Drive image helpers (giữ tương thích ngược) ----------
+        function extractDriveId(urlOrId) {
+            if (!urlOrId) return '';
+            const str = String(urlOrId).trim();
+            if (str.includes('drive.google.com') || str.includes('docs.google.com')) {
+                const m = str.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (m && m[1]) return m[1];
+                const m2 = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                if (m2 && m2[1]) return m2[1];
+                return '';
+            }
+            if (!str.startsWith('http')) return str;
+            return '';
+        }
+        function getDirectLink(urlOrId) {
+            const id = extractDriveId(urlOrId);
+            if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w600`;
+            const str = String(urlOrId || '').trim();
+            return str.startsWith('http') ? str : '';
+        }
+        function getFallbacks(urlOrId) {
+            const id = extractDriveId(urlOrId);
+            const arr = [];
+            if (id) {
+                arr.push(`https://lh3.googleusercontent.com/d/${id}=w600`);
+                arr.push(`https://drive.google.com/uc?export=view&id=${id}`);
+            }
+            arr.push(SAMPLE_IMG);
+            return arr;
+        }
+        function handleImgError(img) {
+            let fb = [];
+            try { fb = JSON.parse(img.dataset.fallbacks || '[]'); } catch(e) {}
+            if (fb.length > 0) {
+                const next = fb.shift();
+                img.dataset.fallbacks = JSON.stringify(fb);
+                img.src = next;
+            } else {
+                img.onerror = null;
+                const ph = document.createElement('div');
+                ph.className = 'card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300';
+                img.parentElement.appendChild(ph);
+                img.remove();
+            }
+        }
+
+        // ---------- Fetch ----------
+        document.addEventListener('DOMContentLoaded', fetchData);
 
         function fetchData() {
             document.getElementById('syncStatus').textContent = "Đang kết nối API...";
-            
             fetch(API_URL, { redirect: "follow" })
-                .then(response => {
-                    if (!response.ok) throw new Error("HTTP error! Status: " + response.status);
-                    return response.json();
-                })
+                .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
                 .then(data => {
-                    RAW_DATA = Array.isArray(data) ? data.filter(item => item['Mã BĐS'] && String(item['Mã BĐS']).trim() !== '') : [];
-                    
-                    if (RAW_DATA.length === 0) {
-                        throw new Error("Dữ liệu trả về trống.");
-                    }
-                    
-                    document.getElementById('syncStatus').textContent = "Đã đồng bộ trực tiếp";
+                    RAW_DATA = Array.isArray(data) ? data.filter(i => i['Mã BĐS'] && String(i['Mã BĐS']).trim() !== '') : [];
+                    if (RAW_DATA.length === 0) throw new Error("Dữ liệu trống");
+                    document.getElementById('syncStatus').textContent = "Đã đồng bộ";
                     initFilters();
                     applyFilters();
                 })
-                .catch(error => {
-                    console.error("Fetch Error:", error);
+                .catch(err => {
+                    console.error("Fetch Error:", err);
                     document.getElementById('syncStatus').textContent = "Lỗi kết nối API";
-                    showEmptyState("Lỗi kết nối", "Không thể lấy dữ liệu từ Google Sheets. Hãy kiểm tra lại quyền truy cập 'Anyone' và tạo 'New version' khi Deploy Apps Script.");
+                    showEmptyState("Lỗi kết nối", "Không thể lấy dữ liệu từ Google Sheets. Kiểm tra quyền 'Anyone' và tạo 'New version' khi Deploy Apps Script.");
                 });
         }
 
         function showEmptyState(title, desc) {
-            document.getElementById('productGrid').classList.add('hidden');
-            const empty = document.getElementById('emptyState');
-            empty.classList.remove('hidden');
+            document.getElementById('view-grid').classList.add('hidden');
+            document.getElementById('view-category').classList.add('hidden');
+            const e = document.getElementById('emptyState');
+            e.classList.remove('hidden'); e.classList.add('flex');
             document.getElementById('emptyTitle').textContent = title;
             document.getElementById('emptyDesc').textContent = desc;
             document.getElementById('kpi-total').textContent = '(0)';
         }
 
-        // Trích fileId từ mọi định dạng link/ID Google Drive
-        function extractDriveId(urlOrId) {
-            if (!urlOrId) return '';
-            const str = String(urlOrId).trim();
-            if (str.includes('drive.google.com') || str.includes('docs.google.com')) {
-                const matchId = str.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                if (matchId && matchId[1]) return matchId[1];
-                const matchIdParam = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-                if (matchIdParam && matchIdParam[1]) return matchIdParam[1];
-                return '';
-            }
-            // Nếu dán trực tiếp chuỗi ID (không phải URL http khác)
-            if (!str.startsWith('http')) return str;
-            return '';
+        // ---------- Card builder (dùng chung grid + carousel) ----------
+        function buildCard(item, isCarousel) {
+            let coverImg = getDirectLink(item['Ảnh Bìa']) || SAMPLE_IMG;
+            let fb = getFallbacks(item['Ảnh Bìa']);
+            const type = item['Loại BĐS ng ta đang đầu tư'] || '';
+            const status = item['Tình trạng'] || 'Đang cập nhật';
+            const badge = status === 'Sẵn bán'
+                ? `<div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[11px] font-bold text-luxe-black shadow-sm z-10">Guest Favorite</div>`
+                : `<div class="absolute top-3 left-3 bg-luxe-black/80 backdrop-blur px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm z-10">${status}</div>`;
+
+            const card = document.createElement('div');
+            card.className = 'luxe-card cursor-pointer group flex flex-col gap-3' + (isCarousel ? ' carousel-card' : '');
+            card.innerHTML = `
+                <div class="card-img-wrap aspect-[20/19]">
+                    ${badge}
+                    <button class="absolute top-3 right-3 z-10 p-1 group-hover:scale-110 transition-transform">
+                        <svg viewBox="0 0 32 32" aria-hidden="true" style="display:block;fill:rgba(0,0,0,0.5);height:24px;width:24px;stroke:white;stroke-width:2;overflow:visible;"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z"></path></svg>
+                    </button>
+                    <img src="${coverImg}" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+                         data-fallbacks='${JSON.stringify(fb).replace(/'/g, "&#39;")}'
+                         onerror="handleImgError(this)"
+                         class="card-img absolute inset-0 w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-semibold text-[15px] text-luxe-black truncate pr-2">${item['Khu vực 12'] || 'Phú Quốc'}</h3>
+                        <span class="text-[13px] text-luxe-black font-semibold flex-shrink-0">${item['Mã BĐS']}</span>
+                    </div>
+                    <p class="text-[14px] text-luxe-gray mt-0.5 truncate">${item['Địa chỉ'] || ''}</p>
+                    <p class="text-[14px] text-luxe-gray mt-0.5 truncate">${type} • ${formatArea(item['Diện tích (m²)'])}</p>
+                    <div class="mt-1.5">
+                        <span class="font-semibold text-[15px] text-luxe-black">${formatMoney(item['Giá niêm yết (VND)'])}</span>
+                        <span class="text-[14px] text-luxe-black font-light ml-1">tổng</span>
+                    </div>
+                </div>`;
+            return card;
         }
 
-        // Chuyển link/ID Drive thành URL ảnh trực tiếp.
-        // Dùng endpoint "thumbnail" — ổn định hơn lh3 khi hotlink từ domain ngoài (Vercel),
-        // ít bị chặn referrer, và cho phép chỉ định kích thước (sz=w800).
-        function getDriveDirectLink(urlOrId, size) {
-            const fileId = extractDriveId(urlOrId);
-            if (fileId) {
-                const sz = size || 'w800';
-                return `https://drive.google.com/thumbnail?id=${fileId}&sz=${sz}`;
-            }
-            // Nếu là URL ảnh thông thường khác (không phải Drive) thì giữ nguyên
-            const str = String(urlOrId || '').trim();
-            return str.startsWith('http') ? str : '';
-        }
-
-        // Endpoint dự phòng khi thumbnail lỗi (thử lh3 rồi uc)
-        function getDriveFallbacks(urlOrId) {
-            const fileId = extractDriveId(urlOrId);
-            if (!fileId) return [];
-            return [
-                `https://lh3.googleusercontent.com/d/${fileId}=w800`,
-                `https://drive.google.com/uc?export=view&id=${fileId}`
-            ];
-        }
-
-        // Khi 1 URL ảnh lỗi: lần lượt thử các endpoint dự phòng; hết thì hiện placeholder
-        function handleImgError(img) {
-            let fallbacks = [];
-            try { fallbacks = JSON.parse(img.dataset.fallbacks || '[]'); } catch(e) {}
-            if (fallbacks.length > 0) {
-                const next = fallbacks.shift();
-                img.dataset.fallbacks = JSON.stringify(fallbacks);
-                img.src = next;
-            } else {
-                // Hết link dự phòng → thay bằng gradient placeholder
-                img.onerror = null;
-                const wrap = img.parentElement;
-                const ph = document.createElement('div');
-                ph.className = 'card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300';
-                wrap.appendChild(ph);
-                img.remove();
-            }
-        }
-
-        function renderCards(data) {
+        // ---------- VIEW 1: GRID + PAGINATION ----------
+        function renderGrid() {
             const grid = document.getElementById('productGrid');
-            const empty = document.getElementById('emptyState');
-            
             grid.innerHTML = '';
-            
-            if (data.length === 0) {
-                grid.classList.add('hidden');
-                empty.classList.remove('hidden');
-                document.getElementById('emptyTitle').textContent = "Không có kết quả chính xác";
-                document.getElementById('emptyDesc').textContent = "Thử thay đổi từ khóa hoặc xóa bộ lọc.";
-                document.getElementById('kpi-total').textContent = '(0)';
-                return;
-            }
-            
-            grid.classList.remove('hidden');
-            empty.classList.add('hidden');
-            document.getElementById('kpi-total').textContent = `(${data.length})`;
 
-            const fragment = document.createDocumentFragment();
-            
-            data.forEach(item => {
-                let imgHue = 0;
-                let type = item['Loại BĐS ng ta đang đầu tư'] || '';
-                if (type.includes('Biệt thự')) imgHue = 120;
-                if (type.includes('Đất')) imgHue = 45;
-                if (type.includes('Khách sạn') || type.includes('Resort')) imgHue = 200;
+            const total = filteredData.length;
+            const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+            if (currentPage > totalPages) currentPage = 1;
 
-                // Ảnh bìa: ưu tiên link thật từ cột "Ảnh Bìa" (Cloudinary hoặc URL http thường,
-                // hoặc link Google Drive sẽ tự convert). Nếu cột trống → dùng ảnh mẫu tạm.
-                let coverImg = getDriveDirectLink(item['Ảnh Bìa']) || SAMPLE_IMG;
-                // Chuỗi URL dự phòng cho ảnh Drive; cuối cùng luôn về ảnh mẫu.
-                let imgFallbacks = getDriveFallbacks(item['Ảnh Bìa']);
-                imgFallbacks.push(SAMPLE_IMG);
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const pageItems = filteredData.slice(start, start + PAGE_SIZE);
 
-                const card = document.createElement('div');
-                card.className = 'luxe-card cursor-pointer group flex flex-col gap-3';
-                
-                let status = item['Tình trạng'] || 'Đang cập nhật';
-                let badgeHTML = status === 'Sẵn bán' 
-                    ? `<div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[11px] font-bold text-luxe-black shadow-sm z-10">Guest Favorite</div>`
-                    : `<div class="absolute top-3 left-3 bg-luxe-black/80 backdrop-blur px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm z-10">${status}</div>`;
+            const frag = document.createDocumentFragment();
+            pageItems.forEach(item => frag.appendChild(buildCard(item, false)));
+            grid.appendChild(frag);
 
-                const placeholderHTML = `<div class="card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300" style="filter: hue-rotate(${imgHue}deg) saturate(0.5);"></div>`;
-                let imageContent = coverImg 
-                    ? `<img src="${coverImg}" loading="lazy" decoding="async" referrerpolicy="no-referrer"
-                           data-fallbacks='${JSON.stringify(imgFallbacks).replace(/'/g, "&#39;")}'
-                           onerror="handleImgError(this)"
-                           class="card-img absolute inset-0 w-full h-full object-cover">`
-                    : placeholderHTML;
-
-                card.innerHTML = `
-                    <div class="card-img-wrap aspect-[20/19]">
-                        ${badgeHTML}
-                        <button class="absolute top-3 right-3 z-10 p-1 group-hover:scale-110 transition-transform">
-                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: rgba(0, 0, 0, 0.5); height: 24px; width: 24px; stroke: white; stroke-width: 2; overflow: visible;"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z"></path></svg>
-                        </button>
-                        ${imageContent}
-                    </div>
-                    
-                    <div class="flex flex-col">
-                        <div class="flex justify-between items-start">
-                            <h3 class="font-semibold text-[15px] text-luxe-black truncate pr-4">${item['Khu vực 12'] || 'Phú Quốc'}</h3>
-                            <span class="text-[13px] text-luxe-black font-semibold">${item['Mã BĐS']}</span>
-                        </div>
-                        <p class="text-[15px] text-luxe-gray mt-0.5 truncate">${item['Địa chỉ'] || ''}</p>
-                        <p class="text-[15px] text-luxe-gray mt-0.5">${type} • ${formatArea(item['Diện tích (m²)'])}</p>
-                        <div class="mt-1.5">
-                            <span class="font-semibold text-[15px] text-luxe-black">${formatMoney(item['Giá niêm yết (VND)'])}</span>
-                            <span class="text-[15px] text-luxe-black font-light ml-1">tổng</span>
-                        </div>
-                    </div>
-                `;
-                fragment.appendChild(card);
-            });
-            
-            grid.appendChild(fragment);
+            renderPagination(totalPages);
         }
 
+        function renderPagination(totalPages) {
+            const pag = document.getElementById('pagination');
+            pag.innerHTML = '';
+            if (totalPages <= 1) return;
+
+            const mkBtn = (label, page, opts = {}) => {
+                const b = document.createElement('button');
+                b.className = 'page-btn' + (opts.active ? ' active' : '');
+                b.innerHTML = label;
+                if (opts.disabled) b.disabled = true;
+                else b.onclick = () => { currentPage = page; renderGrid(); window.scrollTo({top: 0, behavior: 'smooth'}); };
+                return b;
+            };
+
+            // Prev
+            pag.appendChild(mkBtn('‹', currentPage - 1, { disabled: currentPage === 1 }));
+
+            // Page numbers with ellipsis (show first, last, current±1)
+            const pages = [];
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) pages.push(i);
+                else if (pages[pages.length - 1] !== '...') pages.push('...');
+            }
+            pages.forEach(p => {
+                if (p === '...') {
+                    const span = document.createElement('span');
+                    span.className = 'px-2 text-gray-400'; span.textContent = '...';
+                    pag.appendChild(span);
+                } else {
+                    pag.appendChild(mkBtn(p, p, { active: p === currentPage }));
+                }
+            });
+
+            // Next
+            pag.appendChild(mkBtn('›', currentPage + 1, { disabled: currentPage === totalPages }));
+        }
+
+        // ---------- VIEW 2: CATEGORY CAROUSELS ----------
+        function renderCategory() {
+            const container = document.getElementById('view-category');
+            container.innerHTML = '';
+
+            // Group filteredData by Loại BĐS
+            const groups = {};
+            filteredData.forEach(item => {
+                const cat = item['Loại BĐS ng ta đang đầu tư'] || 'Khác';
+                (groups[cat] = groups[cat] || []).push(item);
+            });
+
+            // Sort categories by count desc
+            const cats = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+
+            if (cats.length === 0) { showEmptyInline(); return; }
+
+            cats.forEach((cat, idx) => {
+                const items = groups[cat].slice(0, CAROUSEL_LIMIT);
+                const rowId = 'carousel-' + idx;
+
+                const section = document.createElement('section');
+                section.className = 'carousel-section relative';
+                section.innerHTML = `
+                    <div class="flex items-baseline justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-luxe-black">${cat}
+                            <span class="text-sm text-gray-400 font-normal ml-1">(${groups[cat].length})</span>
+                        </h3>
+                        <button onclick="jumpToCategoryInGrid('${cat.replace(/'/g, "\\'")}')" class="text-sm text-luxe-accent font-medium hover:underline">Xem tất cả ›</button>
+                    </div>
+                    <div class="carousel-nav left" onclick="scrollCarousel('${rowId}', -1)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                    </div>
+                    <div class="carousel-nav right" onclick="scrollCarousel('${rowId}', 1)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                    <div class="carousel-row no-scrollbar" id="${rowId}"></div>
+                `;
+                container.appendChild(section);
+
+                const row = section.querySelector('#' + rowId);
+                const frag = document.createDocumentFragment();
+                items.forEach(item => frag.appendChild(buildCard(item, true)));
+                row.appendChild(frag);
+            });
+        }
+
+        function scrollCarousel(rowId, dir) {
+            const row = document.getElementById(rowId);
+            if (row) row.scrollBy({ left: dir * 560, behavior: 'smooth' });
+        }
+
+        function jumpToCategoryInGrid(cat) {
+            // Set the filter pill to this category and switch to grid
+            selectedType = cat;
+            document.querySelectorAll('#filter-type button').forEach(b => {
+                b.classList.toggle('active', b.dataset.value === cat);
+            });
+            switchView('grid');
+            applyFilters();
+        }
+
+        function showEmptyInline() {
+            document.getElementById('view-grid').classList.add('hidden');
+            document.getElementById('view-category').classList.add('hidden');
+            const e = document.getElementById('emptyState');
+            e.classList.remove('hidden'); e.classList.add('flex');
+            document.getElementById('emptyTitle').textContent = "Không có kết quả";
+            document.getElementById('emptyDesc').textContent = "Thử thay đổi từ khóa hoặc xóa bộ lọc.";
+        }
+
+        // ---------- View switch ----------
+        function switchView(view) {
+            currentView = view;
+            document.getElementById('tab-grid').classList.toggle('active', view === 'grid');
+            document.getElementById('tab-category').classList.toggle('active', view === 'category');
+            document.getElementById('view-grid').classList.toggle('hidden', view !== 'grid');
+            document.getElementById('view-category').classList.toggle('hidden', view !== 'category');
+            // sort dropdown chỉ ý nghĩa với grid; vẫn để hiển thị
+            render();
+        }
+
+        function render() {
+            const e = document.getElementById('emptyState');
+            if (filteredData.length === 0) { showEmptyInline(); return; }
+            e.classList.add('hidden'); e.classList.remove('flex');
+
+            if (currentView === 'grid') {
+                document.getElementById('view-grid').classList.remove('hidden');
+                document.getElementById('view-category').classList.add('hidden');
+                renderGrid();
+            } else {
+                document.getElementById('view-grid').classList.add('hidden');
+                document.getElementById('view-category').classList.remove('hidden');
+                document.getElementById('view-category').classList.add('flex');
+                renderCategory();
+            }
+        }
+
+        // ---------- Filters ----------
         function initFilters() {
             const types = [...new Set(RAW_DATA.map(i => i['Loại BĐS ng ta đang đầu tư']))].filter(Boolean);
-            const typeContainer = document.getElementById('filter-type');
-            typeContainer.innerHTML = '';
-            
-            const createFilterPill = (val, label, isFirst = false) => {
-                const btn = document.createElement('button');
-                btn.className = `filter-pill px-5 py-2.5 text-sm ${isFirst ? 'active' : ''}`;
-                btn.dataset.value = val;
-                btn.textContent = label;
-                btn.onclick = (e) => toggleType(e.currentTarget, val);
-                return btn;
+            const c = document.getElementById('filter-type');
+            c.innerHTML = '';
+            const mk = (val, label, first) => {
+                const b = document.createElement('button');
+                b.className = 'filter-pill px-5 py-2.5 text-sm' + (first ? ' active' : '');
+                b.dataset.value = val; b.textContent = label;
+                b.onclick = e => toggleType(e.currentTarget, val);
+                return b;
             };
-            
-            typeContainer.appendChild(createFilterPill('all', 'Tất cả', true));
-            types.forEach(type => typeContainer.appendChild(createFilterPill(type, type)));
+            c.appendChild(mk('all', 'Tất cả', true));
+            types.forEach(t => c.appendChild(mk(t, t)));
 
-            document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+            const deb = debounce(applyFilters, 300);
+            document.getElementById('searchInput').addEventListener('input', deb);
+            const sm = document.getElementById('searchInputMobile');
+            if (sm) sm.addEventListener('input', deb);
             document.getElementById('sortSelect').addEventListener('change', applyFilters);
         }
 
         function toggleType(el, val) {
-            document.querySelectorAll('#filter-type button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#filter-type button').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
             selectedType = val;
             applyFilters();
@@ -371,36 +524,37 @@
 
         function resetFilters() {
             document.getElementById('searchInput').value = '';
+            const sm = document.getElementById('searchInputMobile'); if (sm) sm.value = '';
             document.getElementById('sortSelect').value = 'price-desc';
             const allBtn = document.querySelector('#filter-type button[data-value="all"]');
-            if(allBtn) toggleType(allBtn, 'all');
-            else applyFilters();
+            if (allBtn) toggleType(allBtn, 'all'); else applyFilters();
         }
 
         function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const sort = document.getElementById('sortSelect' ).value;
+            const term = (document.getElementById('searchInput').value
+                || (document.getElementById('searchInputMobile') ? document.getElementById('searchInputMobile').value : '')
+                ).toLowerCase();
+            const sort = document.getElementById('sortSelect').value;
 
             filteredData = RAW_DATA.filter(item => {
-                const searchableStr = `${item['Mã BĐS'] || ''} ${item['Tên Sản Phẩm'] || ''} ${item['Khu vực 12'] || ''} ${item['Địa chỉ'] || ''}`.toLowerCase();
-                if (searchTerm && !searchableStr.includes(searchTerm)) return false;
+                const s = `${item['Mã BĐS'] || ''} ${item['Tên Sản Phẩm'] || ''} ${item['Khu vực 12'] || ''} ${item['Địa chỉ'] || ''}`.toLowerCase();
+                if (term && !s.includes(term)) return false;
                 if (selectedType !== 'all' && item['Loại BĐS ng ta đang đầu tư'] !== selectedType) return false;
                 return true;
             });
 
             filteredData.sort((a, b) => {
-                const priceA = parseFloat(a['Giá niêm yết (VND)']) || 0;
-                const priceB = parseFloat(b['Giá niêm yết (VND)']) || 0;
-                const areaA = parseFloat(a['Diện tích (m²)']) || 0;
-                const areaB = parseFloat(b['Diện tích m²'] || b['Diện tích (m²)']) || 0;
-                
-                if (sort === 'price-desc') return priceB - priceA;
-                if (sort === 'price-asc') return priceA - priceB;
-                if (sort === 'area-desc') return areaB - areaA;
+                const pa = priceNum(a['Giá niêm yết (VND)']), pb = priceNum(b['Giá niêm yết (VND)']);
+                const aa = parseFloat(a['Diện tích (m²)']) || 0, ab = parseFloat(b['Diện tích (m²)']) || 0;
+                if (sort === 'price-desc') return pb - pa;
+                if (sort === 'price-asc') return pa - pb;
+                if (sort === 'area-desc') return ab - aa;
                 return 0;
             });
 
-            renderCards(filteredData);
+            currentPage = 1; // reset về trang 1 mỗi lần lọc
+            document.getElementById('kpi-total').textContent = `(${filteredData.length})`;
+            render();
         }
     </script>
 </body>
