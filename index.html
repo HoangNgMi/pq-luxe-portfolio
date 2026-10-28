@@ -126,6 +126,10 @@
         let filteredData = [];
         let selectedType = 'all';
 
+        // Ảnh mẫu tạm (Cloudinary) — dùng cho mọi card khi chưa có ảnh riêng từng BĐS.
+        // q_auto = tự tối ưu chất lượng, f_auto = tự chọn format (WebP/AVIF), w_800 = resize.
+        const SAMPLE_IMG = "https://res.cloudinary.com/f1q704d5/image/upload/w_800,q_auto,f_auto/v1793162611/PQ0001_1.jpg";
+
         const formatMoney = (val) => {
             if (!val || isNaN(val)) return 'Liên hệ';
             const ty = val / 1000000000;
@@ -181,31 +185,63 @@
             document.getElementById('kpi-total').textContent = '(0)';
         }
 
-        // Hàm thông minh chuyển đổi mọi định dạng link/ID Google Drive thành link ảnh trực tiếp
-        function getDriveDirectLink(urlOrId) {
+        // Trích fileId từ mọi định dạng link/ID Google Drive
+        function extractDriveId(urlOrId) {
             if (!urlOrId) return '';
-            let str = String(urlOrId).trim();
-            let fileId = '';
-
-            // Nếu người dùng dán nguyên link chia sẻ của Google Drive
+            const str = String(urlOrId).trim();
             if (str.includes('drive.google.com') || str.includes('docs.google.com')) {
                 const matchId = str.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                if (matchId && matchId[1]) {
-                    fileId = matchId[1];
-                } else {
-                    const matchIdParam = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-                    if (matchIdParam && matchIdParam[1]) fileId = matchIdParam[1];
-                }
-            } else {
-                // Nếu người dùng chỉ dán trực tiếp chuỗi ID
-                fileId = str;
+                if (matchId && matchId[1]) return matchId[1];
+                const matchIdParam = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                if (matchIdParam && matchIdParam[1]) return matchIdParam[1];
+                return '';
             }
+            // Nếu dán trực tiếp chuỗi ID (không phải URL http khác)
+            if (!str.startsWith('http')) return str;
+            return '';
+        }
 
+        // Chuyển link/ID Drive thành URL ảnh trực tiếp.
+        // Dùng endpoint "thumbnail" — ổn định hơn lh3 khi hotlink từ domain ngoài (Vercel),
+        // ít bị chặn referrer, và cho phép chỉ định kích thước (sz=w800).
+        function getDriveDirectLink(urlOrId, size) {
+            const fileId = extractDriveId(urlOrId);
             if (fileId) {
-                // Sử dụng endpoint chuẩn xác hiển thị ảnh trực tiếp của Google Drive
-                return `https://lh3.googleusercontent.com/d/${fileId}`;
+                const sz = size || 'w800';
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=${sz}`;
             }
-            return str; // Trả về nguyên bản nếu là một URL thông thường khác
+            // Nếu là URL ảnh thông thường khác (không phải Drive) thì giữ nguyên
+            const str = String(urlOrId || '').trim();
+            return str.startsWith('http') ? str : '';
+        }
+
+        // Endpoint dự phòng khi thumbnail lỗi (thử lh3 rồi uc)
+        function getDriveFallbacks(urlOrId) {
+            const fileId = extractDriveId(urlOrId);
+            if (!fileId) return [];
+            return [
+                `https://lh3.googleusercontent.com/d/${fileId}=w800`,
+                `https://drive.google.com/uc?export=view&id=${fileId}`
+            ];
+        }
+
+        // Khi 1 URL ảnh lỗi: lần lượt thử các endpoint dự phòng; hết thì hiện placeholder
+        function handleImgError(img) {
+            let fallbacks = [];
+            try { fallbacks = JSON.parse(img.dataset.fallbacks || '[]'); } catch(e) {}
+            if (fallbacks.length > 0) {
+                const next = fallbacks.shift();
+                img.dataset.fallbacks = JSON.stringify(fallbacks);
+                img.src = next;
+            } else {
+                // Hết link dự phòng → thay bằng gradient placeholder
+                img.onerror = null;
+                const wrap = img.parentElement;
+                const ph = document.createElement('div');
+                ph.className = 'card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300';
+                wrap.appendChild(ph);
+                img.remove();
+            }
         }
 
         function renderCards(data) {
@@ -236,8 +272,12 @@
                 if (type.includes('Đất')) imgHue = 45;
                 if (type.includes('Khách sạn') || type.includes('Resort')) imgHue = 200;
 
-                // Xử lý Ảnh Bìa thông qua hàm chuẩn Google Drive
-                let coverImg = getDriveDirectLink(item['Ảnh Bìa']);
+                // Ảnh bìa: ưu tiên link thật từ cột "Ảnh Bìa" (Cloudinary hoặc URL http thường,
+                // hoặc link Google Drive sẽ tự convert). Nếu cột trống → dùng ảnh mẫu tạm.
+                let coverImg = getDriveDirectLink(item['Ảnh Bìa']) || SAMPLE_IMG;
+                // Chuỗi URL dự phòng cho ảnh Drive; cuối cùng luôn về ảnh mẫu.
+                let imgFallbacks = getDriveFallbacks(item['Ảnh Bìa']);
+                imgFallbacks.push(SAMPLE_IMG);
 
                 const card = document.createElement('div');
                 card.className = 'luxe-card cursor-pointer group flex flex-col gap-3';
@@ -247,9 +287,13 @@
                     ? `<div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[11px] font-bold text-luxe-black shadow-sm z-10">Guest Favorite</div>`
                     : `<div class="absolute top-3 left-3 bg-luxe-black/80 backdrop-blur px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm z-10">${status}</div>`;
 
+                const placeholderHTML = `<div class="card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300" style="filter: hue-rotate(${imgHue}deg) saturate(0.5);"></div>`;
                 let imageContent = coverImg 
-                    ? `<img src="${coverImg}" loading="lazy" class="card-img absolute inset-0 w-full h-full object-cover">`
-                    : `<div class="card-img absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 mix-blend-multiply" style="filter: hue-rotate(${imgHue}deg) saturate(0.5);"></div>`;
+                    ? `<img src="${coverImg}" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+                           data-fallbacks='${JSON.stringify(imgFallbacks).replace(/'/g, "&#39;")}'
+                           onerror="handleImgError(this)"
+                           class="card-img absolute inset-0 w-full h-full object-cover">`
+                    : placeholderHTML;
 
                 card.innerHTML = `
                     <div class="card-img-wrap aspect-[20/19]">
