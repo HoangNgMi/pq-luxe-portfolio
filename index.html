@@ -47,21 +47,20 @@
             box-shadow: 0 2px 6px rgba(255,56,92,0.3);
         }
 
-        /* Secondary pill (Giá / Diện tích) — cùng cỡ chữ với category pill (14px) */
-        .sub-pill {
-            transition: all 0.15s ease; background: #fff; color: #222;
-            border: 1px solid #ddd; border-radius: 999px; white-space: nowrap;
-            flex-shrink: 0; font-weight: 500; cursor: pointer; padding: 8px 16px; font-size: 14px;
+        /* Dropdown filter (Khu vực / Giá / Diện tích) — đồng nhất kích thước & cỡ chữ */
+        .filter-select {
+            border: 1px solid #ddd; border-radius: 999px;
+            padding: 10px 20px; font-size: 14px; font-weight: 500;
+            background: #fff; color: #222; cursor: pointer; white-space: nowrap;
+            transition: border-color 0.15s ease; outline: none;
         }
-        .sub-pill:hover { border-color: #222; }
-        .sub-pill.active { background: #222; color: #fff; border-color: #222; }
-        /* Trên mobile bottom-sheet, pill to hơn cho dễ bấm */
-        #filter-price-m .sub-pill, #filter-area-m .sub-pill { padding: 10px 16px; font-size: 14px; }
+        .filter-select:hover { border-color: #222; }
+        .filter-select:focus { border-color: #222; }
 
-        /* Nhãn nhóm (Khu vực / Giá / Diện tích) — pill tròn đỏ nhạt, cùng cỡ chữ */
+        /* Nhãn nhóm — pill tròn đỏ nhạt, cùng cỡ chữ 14px */
         .filter-label-pill {
             background: #FF8095; color: #fff; border-radius: 999px;
-            padding: 8px 16px; font-size: 14px; font-weight: 600;
+            padding: 10px 18px; font-size: 14px; font-weight: 600;
             white-space: nowrap; flex-shrink: 0; letter-spacing: 0.2px;
         }
 
@@ -158,26 +157,23 @@
             <!-- Tầng 1: Loại BĐS (pill lướt ngang) -->
             <div class="flex items-center gap-3 overflow-x-auto no-scrollbar py-1" id="filter-type"></div>
 
-            <!-- Tầng 2 desktop: Khu vực + Giá + Diện tích -->
+            <!-- Tầng 2 desktop: Khu vực + Giá + Diện tích (đều là dropdown) -->
             <div class="hidden md:flex items-center gap-2.5 mt-2.5 pt-2.5 border-t border-gray-100 overflow-x-auto no-scrollbar">
-                <!-- Khu vực dropdown -->
                 <div class="flex items-center gap-2 flex-shrink-0">
                     <span class="filter-label-pill">Khu vực</span>
-                    <select id="filter-khuvuc" class="border border-gray-300 rounded-full px-4 py-2 text-sm font-medium hover:border-gray-900 transition-colors focus:outline-none cursor-pointer bg-white">
+                    <select id="filter-khuvuc" class="filter-select">
                         <option value="all">Tất cả khu vực</option>
                     </select>
                 </div>
                 <div class="w-px h-6 bg-gray-200 flex-shrink-0"></div>
-                <!-- Giá (pill lướt ngang) -->
                 <div class="flex items-center gap-2 flex-shrink-0">
                     <span class="filter-label-pill">Giá</span>
-                    <div class="flex items-center gap-2" id="filter-price"></div>
+                    <select id="filter-price" class="filter-select"></select>
                 </div>
                 <div class="w-px h-6 bg-gray-200 flex-shrink-0"></div>
-                <!-- Diện tích (pill lướt ngang) -->
                 <div class="flex items-center gap-2 flex-shrink-0">
                     <span class="filter-label-pill">Diện tích</span>
-                    <div class="flex items-center gap-2" id="filter-area"></div>
+                    <select id="filter-area" class="filter-select"></select>
                 </div>
             </div>
 
@@ -211,11 +207,11 @@
                 </div>
                 <div>
                     <h4 class="font-semibold text-luxe-black mb-3">Mức giá</h4>
-                    <div class="flex flex-wrap gap-2" id="filter-price-m"></div>
+                    <select id="filter-price-m" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-medium bg-white"></select>
                 </div>
                 <div>
                     <h4 class="font-semibold text-luxe-black mb-3">Diện tích</h4>
-                    <div class="flex flex-wrap gap-2" id="filter-area-m"></div>
+                    <select id="filter-area-m" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-medium bg-white"></select>
                 </div>
             </div>
             <div class="sticky bottom-0 bg-white border-t border-gray-100 px-5 py-4">
@@ -635,11 +631,11 @@
                 });
             });
 
-            // --- Giá + Diện tích (pill, cả desktop & mobile) ---
-            buildRangePills('filter-price', PRICE_RANGES, 'price');
-            buildRangePills('filter-price-m', PRICE_RANGES, 'price');
-            buildRangePills('filter-area', AREA_RANGES, 'area');
-            buildRangePills('filter-area-m', AREA_RANGES, 'area');
+            // --- Giá + Diện tích (dropdown, cả desktop & mobile) ---
+            buildRangeSelect('filter-price', PRICE_RANGES, 'price');
+            buildRangeSelect('filter-price-m', PRICE_RANGES, 'price');
+            buildRangeSelect('filter-area', AREA_RANGES, 'area');
+            buildRangeSelect('filter-area-m', AREA_RANGES, 'area');
 
             const deb = debounce(applyFilters, 300);
             document.getElementById('searchInput').addEventListener('input', deb);
@@ -648,30 +644,26 @@
             document.getElementById('sortSelect').addEventListener('change', applyFilters);
         }
 
-        function buildRangePills(containerId, ranges, kind) {
-            const c = document.getElementById(containerId);
-            if (!c) return;
-            c.innerHTML = '';
+        function buildRangeSelect(selectId, ranges, kind) {
+            const sel = document.getElementById(selectId);
+            if (!sel) return;
+            sel.innerHTML = '';
             ranges.forEach(r => {
-                const b = document.createElement('button');
-                const isActive = (kind === 'price' ? selectedPrice : selectedArea) === r.key;
-                b.className = 'sub-pill' + (isActive ? ' active' : '');
-                b.dataset.key = r.key;
-                b.dataset.kind = kind;
-                b.textContent = r.label;
-                b.onclick = () => selectRange(kind, r.key);
-                c.appendChild(b);
+                const o = document.createElement('option');
+                o.value = r.key;
+                // Hiển thị "Tất cả giá" / "Tất cả diện tích" cho rõ nghĩa
+                o.textContent = r.key === 'all' ? (kind === 'price' ? 'Tất cả giá' : 'Tất cả diện tích') : r.label;
+                sel.appendChild(o);
             });
-        }
-
-        function selectRange(kind, key) {
-            if (kind === 'price') selectedPrice = key;
-            else selectedArea = key;
-            // cập nhật active cho mọi pill cùng kind (cả desktop & mobile)
-            document.querySelectorAll(`.sub-pill[data-kind="${kind}"]`).forEach(b => {
-                b.classList.toggle('active', b.dataset.key === key);
+            sel.value = (kind === 'price' ? selectedPrice : selectedArea);
+            sel.addEventListener('change', e => {
+                const val = e.target.value;
+                if (kind === 'price') selectedPrice = val; else selectedArea = val;
+                // đồng bộ desktop ↔ mobile
+                const ids = kind === 'price' ? ['filter-price','filter-price-m'] : ['filter-area','filter-area-m'];
+                ids.forEach(id => { const s = document.getElementById(id); if (s) s.value = val; });
+                applyFilters();
             });
-            applyFilters();
         }
 
         function toggleType(el, val) {
@@ -702,8 +694,8 @@
             // Reset 4 bộ lọc
             selectedType = 'all'; selectedKhuvuc = 'all'; selectedPrice = 'all'; selectedArea = 'all';
             document.querySelectorAll('#filter-type button').forEach(b => b.classList.toggle('active', b.dataset.value === 'all'));
-            ['filter-khuvuc','filter-khuvuc-m'].forEach(id => { const s = document.getElementById(id); if (s) s.value = 'all'; });
-            document.querySelectorAll('.sub-pill').forEach(b => b.classList.toggle('active', b.dataset.key === 'all'));
+            ['filter-khuvuc','filter-khuvuc-m','filter-price','filter-price-m','filter-area','filter-area-m']
+                .forEach(id => { const s = document.getElementById(id); if (s) s.value = 'all'; });
             applyFilters();
         }
 
