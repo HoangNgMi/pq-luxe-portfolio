@@ -64,6 +64,45 @@
             white-space: nowrap; flex-shrink: 0; letter-spacing: 0.2px;
         }
 
+        /* Zalo floating widget */
+        .zalo-fab {
+            position: fixed; right: 20px; bottom: 20px; z-index: 70;
+            display: flex; align-items: center; gap: 10px;
+            background: #0068FF; color: #fff; border-radius: 999px;
+            padding: 12px 18px 12px 14px; font-weight: 600; font-size: 15px;
+            box-shadow: 0 6px 20px rgba(0,104,255,0.4);
+            text-decoration: none; transition: all 0.2s ease;
+        }
+        .zalo-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(0,104,255,0.5); }
+        .zalo-fab .zalo-icon {
+            width: 30px; height: 30px; border-radius: 50%; background: #fff;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        /* Vòng pulse nhẹ cho bắt mắt */
+        .zalo-fab .zalo-icon::before {
+            content: ''; position: absolute; width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(255,255,255,0.5); animation: zaloPulse 2s infinite; z-index: -1;
+        }
+        @keyframes zaloPulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            70% { transform: scale(1.8); opacity: 0; }
+            100% { opacity: 0; }
+        }
+        @media (max-width: 640px) {
+            .zalo-fab { padding: 12px; }
+            .zalo-fab .zalo-label { display: none; } /* mobile chỉ hiện icon tròn */
+        }
+
+        /* Nút Zalo nhỏ trên card */
+        .zalo-card-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            width: 100%; margin-top: 8px; padding: 8px 12px;
+            background: #0068FF; color: #fff; border-radius: 8px;
+            font-size: 13px; font-weight: 600; text-decoration: none;
+            transition: background 0.15s ease;
+        }
+        .zalo-card-btn:hover { background: #0055d4; }
+
         .luxe-input {
             border: 1px solid #DDDDDD; border-radius: 999px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.08); transition: box-shadow 0.2s ease;
@@ -282,6 +321,20 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbwXG6fwAEg_soSkEsze-BOrpUD9RH5MSZAUTFzT_XxjVCupi5qWM1e7LswyZcsg8N3F/exec";
         const SAMPLE_IMG = "https://res.cloudinary.com/f1q704d5/image/upload/w_800,q_auto,f_auto/v1793162611/PQ0001_1.jpg";
 
+        // --- Zalo liên hệ ---
+        const ZALO_PHONE = "0938579513";
+        // Link Zalo chung (nút nổi)
+        const ZALO_LINK = `https://zalo.me/${ZALO_PHONE}`;
+        // Link Zalo cho 1 BĐS cụ thể — kèm tin nhắn gợi ý (tự điền Mã BĐS)
+        function zaloLinkForItem(item) {
+            const ma = item['Mã BĐS'] || '';
+            const loai = item['Loại BĐS ng ta đang đầu tư'] || 'BĐS';
+            const khu = item['Khu vực 12'] || '';
+            const msg = `Em quan tâm ${ma} - ${loai}${khu ? ' tại ' + khu : ''}, anh/chị tư vấn giúp em ạ`;
+            // zalo.me hỗ trợ tham số text để điền sẵn nội dung
+            return `https://zalo.me/${ZALO_PHONE}?text=${encodeURIComponent(msg)}`;
+        }
+
         const PAGE_SIZE = 30;         // 30 sp / trang (yêu cầu)
         const CAROUSEL_LIMIT = 15;    // tối đa 15 sp mỗi carousel category
 
@@ -436,6 +489,10 @@
                         <span class="font-semibold text-[15px] text-luxe-black">${formatMoney(item['Giá niêm yết (VND)'])}</span>
                         <span class="text-[14px] text-luxe-black font-light ml-1">tổng</span>
                     </div>
+                    <a href="${zaloLinkForItem(item)}" target="_blank" rel="noopener" class="zalo-card-btn" onclick="event.stopPropagation()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.44 5.22 3.7 6.84-.14.52-.6 1.94-.7 2.3-.12.46.17.46.36.34.15-.1 2.34-1.58 3.28-2.22.74.14 1.52.22 2.36.22 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>
+                        Liên hệ Zalo
+                    </a>
                 </div>`;
             return card;
         }
@@ -750,5 +807,13 @@
             else { badge.classList.add('hidden'); badge.classList.remove('inline-flex'); }
         }
     </script>
+
+    <!-- Zalo floating widget -->
+    <a href="https://zalo.me/0938579513" target="_blank" rel="noopener" class="zalo-fab" aria-label="Liên hệ Zalo">
+        <span class="zalo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#0068FF"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.76 1.44 5.22 3.7 6.84-.14.52-.6 1.94-.7 2.3-.12.46.17.46.36.34.15-.1 2.34-1.58 3.28-2.22.74.14 1.52.22 2.36.22 5.52 0 10-3.94 10-8.8S17.52 2 12 2z"/></svg>
+        </span>
+        <span class="zalo-label">Chat Zalo</span>
+    </a>
 </body>
 </html>
